@@ -1,0 +1,1345 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    background: hsl(0, 0%, 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1050px;
+    margin: 0 auto;
+}
+
+/* Banner styles */
+.banner {
+    display: flex;
+    justify-content: center;
+    gap: 0px;
+    margin-bottom: 16px;
+    border: 8px solid #000000;
+    box-shadow: 
+    8px 8px 0 #000000,
+    16px 16px 0 hsl(329,100%,23.9%);
+    background: hsl(0, 0%, 100%);
+    transform: skew(-5deg);
+}
+
+/* AGGRESSIVE BRUTALIST HEADING */
+.brutalist-heading-2 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    line-height: 1;
+    color: hsl(329,100%,23.9%);
+    background: hsl(0, 0%, 100%);
+    padding: 10px 0px;
+    margin-top: 8px;
+    display: inline-block;
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+.brutalist-heading-2:hover {
+    transform: translate(-4px, -4px);
+    text-shadow: 
+        4px 4px 0 #000000,
+        8px 8px 0 hsl(329,100%,35%),
+        12px 12px 0 hsl(329,100%,50%);
+}
+
+/* Logo styles */
+.logo {
+    width: 250px;
+    height: 100px;
+    margin-top: 2px;
+    transform: skew(5deg);
+}
+
+/* Breadcrumb Navigation */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    font-family: 'Arial Black', 'Helvetica Bold', sans-serif;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.breadcrumb-item {
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+}
+
+.breadcrumb-link {
+    color: #000000;
+    text-decoration: none;
+    padding: 8px 20px 8px 25px;
+    background: #ffffff;
+    border: 4px solid #000000;
+    border-right: none;
+    position: relative;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.breadcrumb-link::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 20px solid #ffffff;
+    border-top: 16px solid transparent;
+    border-bottom: 16px solid transparent;
+    z-index: 2;
+    filter: drop-shadow(4px 0 0 #000000);
+}
+
+.breadcrumb-link::before {
+    content: '';
+    position: absolute;
+    right: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 20px solid #000000;
+    border-top: 18px solid transparent;
+    border-bottom: 18px solid transparent;
+    z-index: 1;
+}
+
+.breadcrumb-link:hover {
+    background: hsl(329,100%,38%);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.breadcrumb-link:hover::after {
+    border-left-color: hsl(329,100%,38%);
+}
+
+.breadcrumb-current {
+    color: #000000;
+    padding: 8px 15px 8px 25px;
+    background: hsl(329,100%,40%);
+    border: 4px solid #000000;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+}
+
+.breadcrumb-separator {
+    display: none;
+}
+
+/* Responsive breadcrumb */
+@media (max-width: 768px) {
+    .breadcrumb {
+        margin-bottom: 15px;
+    }
+    
+    .breadcrumb-item {
+        font-size: 11px;
+    }
+    
+    .breadcrumb-link {
+        padding: 6px 16px 6px 12px;
+    }
+    
+    .breadcrumb-link::after {
+        right: -16px;
+        border-left-width: 16px;
+        border-top-width: 14px;
+        border-bottom-width: 14px;
+    }
+    
+    .breadcrumb-link::before {
+        right: -18px;
+        border-left-width: 16px;
+        border-top-width: 16px;
+        border-bottom-width: 16px;
+    }
+    
+    .breadcrumb-current {
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .breadcrumb {
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+    
+    .breadcrumb-item {
+        font-size: 10px;
+    }
+    
+    .breadcrumb-link {
+        padding: 5px 14px 5px 10px;
+    }
+    
+    .breadcrumb-link::after {
+        right: -14px;
+        border-left-width: 14px;
+        border-top-width: 12px;
+        border-bottom-width: 12px;
+    }
+    
+    .breadcrumb-link::before {
+        right: -16px;
+        border-left-width: 14px;
+        border-top-width: 14px;
+        border-bottom-width: 14px;
+    }
+    
+    .breadcrumb-current {
+        padding: 5px 10px;
+    }
+}
+
+/* Links section */
+.links-section {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+#links-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+}
+
+/* Link item styling */
+.link-item {
+    background: #ffffff;
+    border: 4px solid #000000;
+    padding: 15px;
+    position: relative;
+    box-shadow: 6px 6px 0 #000000;
+    transition: all 0.3s ease;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.link-item:hover, .link-item:focus {
+    box-shadow: 8px 8px 0 #000000;
+    transform: translateY(-2px);
+    background: hsl(329,100%,38%);
+    outline: none;
+}
+
+.course-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    z-index: 1;
+}
+
+.course-edit-icon,
+.course-delete-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 2px solid #000;
+    background: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.course-edit-icon:hover,
+.course-delete-icon:hover {
+    background: #000;
+    color: #fff;
+}
+
+.course-delete-icon:hover {
+    background: hsl(0, 70%, 40%);
+    border-color: hsl(0, 70%, 30%);
+}
+
+.link-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.course-title {
+    font-size: 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.course-title-edit {
+    font-size: 20px;
+    font-weight: 900;
+    width: 100%;
+    max-width: 100%;
+    padding: 4px 8px;
+    border: 2px solid #000;
+    box-sizing: border-box;
+}
+
+.add-course-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.add-course-btn {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #000;
+    background: #fff;
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.add-course-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+.add-course-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.add-course-form input {
+    padding: 8px 12px;
+    border: 2px solid #000;
+    font-size: 16px;
+    min-width: 200px;
+}
+
+.add-course-form button {
+    padding: 8px 16px;
+    border: 2px solid #000;
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.add-course-form button:hover {
+    background: #000;
+    color: #fff;
+}
+
+.add-topic-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.add-topic-btn {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #000;
+    background: #fff;
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.add-topic-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+.add-topic-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.add-topic-form input {
+    padding: 8px 12px;
+    border: 2px solid #000;
+    font-size: 16px;
+    min-width: 200px;
+}
+
+.add-topic-form button {
+    padding: 8px 16px;
+    border: 2px solid #000;
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.add-topic-form button:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* Flashcard add (layer4) */
+.flashcard-add-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.flashcard-add-btn {
+    width: 48px;
+    height: 48px;
+    border: 4px solid #000;
+    background: #fff;
+    font-size: 24px;
+    font-weight: 900;
+    cursor: pointer;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.flashcard-add-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+.flashcard-add-btn.is-hidden {
+    display: none;
+}
+
+.flashcard-style-form {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: 4px solid #000;
+    background: #fff;
+    box-shadow: 6px 6px 0 #000;
+    max-width: 400px;
+}
+
+.flashcard-style-form.is-open {
+    display: flex;
+}
+
+.flashcard-style-form h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+}
+
+.flashcard-style-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.flashcard-style-option {
+    padding: 12px 16px;
+    border: 2px solid #000;
+    background: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+}
+
+.flashcard-style-option:hover {
+    background: #000;
+    color: #fff;
+}
+
+.flashcard-style-form-actions button {
+    padding: 8px 16px;
+    border: 2px solid #000;
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.flashcard-style-form-actions button:hover {
+    background: #000;
+    color: #fff;
+}
+
+.flashcard-type-form {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border: 4px solid #000;
+    background: #fff;
+    box-shadow: 6px 6px 0 #000;
+    max-width: 400px;
+}
+
+.flashcard-type-form.is-open {
+    display: flex;
+}
+
+.flashcard-type-form h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+}
+
+.flashcard-type-form label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.flashcard-type-form input,
+.flashcard-type-form textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #000;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.flashcard-type-form textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.flashcard-type-form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.flashcard-type-form-actions button {
+    padding: 8px 16px;
+    border: 2px solid #000;
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.flashcard-type-form-actions button:hover {
+    background: #000;
+    color: #fff;
+}
+
+.prozess-step-pair {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+.prozess-step-pair label {
+    margin-bottom: 0;
+}
+
+.prozess-add-step-btn {
+    margin-top: 12px;
+    padding: 8px 16px;
+    border: 2px solid #000;
+    background: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+.prozess-add-step-btn:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* Button styles */
+.btn-brutalist-7 {
+    background: black;
+    border: none;
+    color: #fff;
+    padding: 20px 40px;
+    font-size: 18px;
+    font-weight: 900;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    font-family: inherit;
+}
+
+.btn-brutalist-7::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    transform: translateX(-100%) skewX(-15deg);
+    transition: transform 0.3s ease;
+}
+
+.btn-brutalist-7:hover::before {
+    transform: translateX(0) skewX(-15deg);
+}
+
+.btn-brutalist-7:hover {
+    color: #000000;
+}
+
+.btn-brutalist-7 span {
+    position: relative;
+    z-index: 1;
+}
+
+/* Topics section */
+.topics-section {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+
+#topics-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Topic item styling */
+.topic-item {
+    background: #ffffff;
+    border: 4px solid #000000;
+    padding: 20px;
+    position: relative;
+    box-shadow: 6px 6px 0 #000000;
+    transition: all 0.3s ease;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.topic-item:hover, .topic-item:focus {
+    box-shadow: 8px 8px 0 #000000;
+    transform: translateY(-2px);
+    background: hsl(329,100%,38%);
+    outline: none;
+}
+
+.topic-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    z-index: 1;
+}
+
+.topic-edit-icon,
+.topic-delete-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 2px solid #000;
+    background: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.topic-edit-icon:hover,
+.topic-delete-icon:hover {
+    background: #000;
+    color: #fff;
+}
+
+.topic-delete-icon:hover {
+    background: hsl(0, 70%, 40%);
+    border-color: hsl(0, 70%, 30%);
+}
+
+.topic-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.topic-title-edit {
+    font-size: 20px;
+    font-weight: 900;
+    width: 100%;
+    max-width: 100%;
+    padding: 4px 8px;
+    border: 2px solid #000;
+    box-sizing: border-box;
+}
+
+.topic-title {
+    font-size: 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Study Selector Section */
+.study-selector-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 40px 20px;
+}
+
+.selector-container {
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+}
+
+.selector-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: hsl(329,100%,23.9%);
+    margin-bottom: 40px;
+}
+
+.dropdown-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Custom Dropdown Styles */
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-input {
+    width: 100%;
+    padding: 20px 60px 20px 20px;
+    font-size: 18px;
+    font-weight: 700;
+    border: 6px solid #000000;
+    background: #ffffff;
+    color: #000000;
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dropdown-input:focus {
+    box-shadow: 8px 8px 0 #000000;
+    transform: translateY(-2px);
+}
+
+.dropdown-input::placeholder {
+    color: #666666;
+    text-transform: none;
+    font-weight: 500;
+    letter-spacing: normal;
+}
+
+.dropdown-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: hsl(329,100%,38%);
+    border: 4px solid #000000;
+    color: #000000;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.dropdown-toggle:hover {
+    background: hsl(329,100%,50%);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 6px solid #000000;
+    border-top: none;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 8px 8px 0 #000000;
+}
+
+.dropdown-option {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid #f0f0f0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-option:last-child {
+    border-bottom: none;
+}
+
+.dropdown-option:hover,
+.dropdown-option.selected {
+    background: hsl(329,100%,38%);
+    color: #000000;
+    font-weight: 700;
+}
+
+.option-name {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.no-results {
+    text-align: center;
+    color: #666666;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #links-container {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 600px;
+    }
+    
+    .brutalist-heading-2 {
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+        padding: 15px 30px;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    .link-item {
+        padding: 12px;
+        min-height: 100px;
+    }
+    
+    .btn-brutalist-7 {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+    
+    /* Topics responsive styles */
+    #topics-container {
+        max-width: 600px;
+    }
+    
+    .topic-item {
+        padding: 15px;
+        min-height: 70px;
+    }
+    
+    /* Study selector responsive styles */
+    .selector-title {
+        font-size: 2rem;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+    }
+    
+    .dropdown-input {
+        padding: 15px 50px 15px 15px;
+        font-size: 16px;
+    }
+    
+    .dropdown-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    .option-name {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    #links-container {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+    
+    .link-item {
+        min-height: 110px;
+    }
+    
+    /* Topics mobile styles */
+    #topics-container {
+        max-width: 400px;
+    }
+    
+    .topic-item {
+        min-height: 70px;
+        padding: 12px;
+    }
+    
+    /* Study selector mobile styles */
+    .selector-title {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+        margin-bottom: 25px;
+    }
+    
+    .dropdown-input {
+        padding: 12px 45px 12px 12px;
+        font-size: 14px;
+        border-width: 4px;
+    }
+    
+    .dropdown-toggle {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+        right: 8px;
+    }
+    
+    .dropdown-menu {
+        border-width: 4px;
+        max-height: 250px;
+    }
+    
+    .dropdown-option {
+        padding: 12px 15px;
+    }
+    
+    .option-name {
+        font-size: 13px;
+    }
+}
+
+/* Flashcard Section */
+.flashcard-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    padding: 0px 20px;
+    min-height: 70vh;
+}
+
+.flashcard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 800px;
+}
+
+.flashcard-container.is-hidden {
+    display: none;
+}
+
+/* Flashcard Styles */
+.flashcard {
+    background: #ffffff;
+    border: 8px solid #000000;
+    padding: 40px;
+    position: relative;
+    box-shadow: 12px 12px 0 #000000;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.flashcard:hover {
+    box-shadow: 16px 16px 0 #000000;
+    transform: translateY(-4px);
+}
+
+.flashcard.showing-answer {
+    background: #ffffff;
+}
+
+.flashcard.showing-answer:hover {
+    transform: translateY(-4px);
+}
+
+.flashcard-content {
+    text-align: center;
+    width: 100%;
+}
+
+.flashcard-question h3,
+.flashcard-answer h3 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #000000;
+    margin-bottom: 20px;
+}
+
+.flashcard-question p,
+.flashcard-answer p {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #000000;
+    margin: 0;
+}
+
+/* Flashcard Controls */
+.flashcard-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+.next-btn {
+    padding: 20px 40px;
+    font-size: 18px;
+    font-weight: 900;
+    border: 6px solid #000000;
+    box-shadow: 8px 8px 0 #000000;
+    background: hsl(329,100%,38%);
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.next-btn:hover {
+    box-shadow: 12px 12px 0 #000000;
+    transform: translateY(-2px);
+}
+
+.card-counter {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #000000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 20px;
+    background: #ffffff;
+    border: 4px solid #000000;
+    box-shadow: 4px 4px 0 #000000;
+}
+
+/* Standard flashcard: answer shown below question with separator */
+.flashcard-content .flashcard-answer {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #000;
+}
+
+.flashcard-counter-row {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.spaced-rep-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.spaced-rep-buttons button {
+    padding: 16px 24px;
+    font-size: 18px;
+    font-weight: 900;
+    border: 3px solid #000;
+    cursor: pointer;
+    min-width: 48px;
+    color: #fff;
+}
+
+.spaced-rep-buttons button:hover {
+    filter: brightness(1.1);
+}
+
+.sr-btn-1 { background: #c0392b; }
+.sr-btn-2 { background: #e67e22; }
+.sr-btn-3 { background: #f1c40f; color: #000; }
+.sr-btn-4 { background: #2ecc71; }
+.sr-btn-5 { background: #27ae60; }
+
+/* Prozess-type flashcard */
+.prozess-flashcard .prozess-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #000;
+}
+.prozess-flashcard .prozess-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #555;
+}
+.prozess-flashcard .prozess-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #000;
+}
+.prozess-flashcard .prozess-step-block {
+    margin-top: 1rem;
+}
+.prozess-flashcard .prozess-step-block:first-of-type {
+    margin-top: 0;
+}
+.prozess-flashcard .prozess-answer {
+    margin-top: 1rem;
+}
+.prozess-flashcard .prozess-question {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    background: #000;
+    color: #fff;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+.prozess-flashcard .prozess-question:first-of-type {
+    margin-top: 0;
+}
+.prozess-flashcard .prozess-step-num {
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #fff;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+.prozess-flashcard .prozess-question p {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #fff;
+    margin: 0;
+}
+.prozess-flashcard .prozess-answer p {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #000;
+    margin: 0;
+}
+
+/* Mnemo-type flashcard */
+.mnemo-flashcard .mnemo-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #000;
+}
+.mnemo-flashcard .mnemo-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #555;
+}
+.mnemo-flashcard .mnemo-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #000;
+}
+.mnemo-flashcard .mnemo-keys-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+.mnemo-flashcard .mnemo-key-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    padding: 0.75rem 1rem;
+    background: #000;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: 2px solid #000;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.mnemo-flashcard .mnemo-key-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    filter: brightness(1.2);
+}
+.mnemo-flashcard .mnemo-key-btn.revealed {
+    background: #2ecc71;
+    color: #000;
+    border-color: #000;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+.mnemo-flashcard .mnemo-key-btn.revealed:hover {
+    filter: brightness(1.1);
+}
+.mnemo-flashcard .mnemo-reveal-all-btn {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 2px solid #000;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+.mnemo-flashcard .mnemo-reveal-all-btn:hover {
+    background: #000;
+    color: #fff;
+}
+.mnemo-flashcard .mnemo-inhalte {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+}
+.mnemo-flashcard .mnemo-inhalt-block {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #000;
+    margin: 0;
+}
+
+/* Responsive design for flashcards */
+@media (max-width: 768px) {
+    .flashcard {
+        padding: 30px 20px;
+        min-height: 250px;
+    }
+    
+    .flashcard-question h3,
+    .flashcard-answer h3 {
+        font-size: 1.3rem;
+        letter-spacing: 1px;
+    }
+    
+    .flashcard-question p,
+    .flashcard-answer p {
+        font-size: 1.1rem;
+    }
+    
+    .next-btn {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .flashcard {
+        padding: 20px 15px;
+        min-height: 200px;
+        border-width: 6px;
+    }
+    
+    .flashcard-question h3,
+    .flashcard-answer h3 {
+        font-size: 1.1rem;
+    }
+    
+    .flashcard-question p,
+    .flashcard-answer p {
+        font-size: 1rem;
+    }
+    
+    .next-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVGU Community Cards</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Banner -->
+        <header class="banner">
+            <img src="./logo/OVGU-Logo.svg" alt="OVGU Logo" class="logo">
+            <h1 class="brutalist-heading-2">Community Cards</h1>
+        </header>
+
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb" id="breadcrumb">
+            <!-- Breadcrumb will be populated by JavaScript -->
+        </nav>
+
+        <!-- Courses Section -->
+        <main class="links-section">
+            <div id="links-container">
+                <!-- Courses will be populated by JavaScript -->
+            </div>
+            <div class="add-course-row">
+                <button type="button" id="addCourseBtn" class="add-course-btn" title="Kurs hinzufügen">+</button>
+                <div id="addCourseForm" class="add-course-form" style="display: none;">
+                    <input type="text" id="newCourseName" placeholder="Kursname" maxlength="255">
+                    <button type="button" id="saveNewCourseBtn">Hinzufügen</button>
+                    <button type="button" id="cancelAddCourseBtn">Abbrechen</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:3000';
+
+        function getProgramIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('program');
+        }
+
+        function getProgramLabel(program) {
+            return program.abschluss ? `${program.abschluss} ${program.studiengang}` : program.studiengang;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function createBreadcrumb(program) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            const label = getProgramLabel(program);
+            breadcrumb.innerHTML = `
+                <span class="breadcrumb-item">
+                    <a href="index.html" class="breadcrumb-link">${escapeHtml(label)}</a>
+                </span>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-item breadcrumb-current">Kurse</span>
+            `;
+        }
+
+        function createCourseElement(course, programId) {
+            const container = document.getElementById('links-container');
+            const courseDiv = document.createElement('div');
+            courseDiv.className = 'link-item';
+            courseDiv.dataset.courseId = course.id;
+            courseDiv.innerHTML = `
+                <div class="course-actions">
+                    <button type="button" class="course-delete-icon" aria-label="Kurs löschen" title="Kurs löschen">&#10008;</button>
+                    <button type="button" class="course-edit-icon" aria-label="Kursname bearbeiten" title="Kursname bearbeiten">&#9998;</button>
+                </div>
+                <div class="link-content">
+                    <div class="course-title" data-course-id="${course.id}">${escapeHtml(course.name)}</div>
+                </div>
+            `;
+            const titleEl = courseDiv.querySelector('.course-title');
+            const editBtn = courseDiv.querySelector('.course-edit-icon');
+            const deleteBtn = courseDiv.querySelector('.course-delete-icon');
+            const goToCourse = () => { window.location.href = `layer3.html?course=${encodeURIComponent(course.id)}`; };
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                startEditCourseName(course.id, course.name, titleEl, (newName) => { titleEl.textContent = newName; });
+            });
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (!confirm('Kurs wirklich löschen?')) return;
+                fetch(`${API_BASE}/api/courses/${course.id}`, { method: 'DELETE' })
+                    .then(res => res.ok ? undefined : Promise.reject())
+                    .then(() => courseDiv.remove())
+                    .catch(() => {});
+            });
+            courseDiv.addEventListener('click', (e) => {
+                if (e.target.closest('.course-edit-icon') || e.target.closest('.course-delete-icon')) return;
+                goToCourse();
+            });
+            courseDiv.setAttribute('tabindex', '0');
+            courseDiv.setAttribute('role', 'button');
+            courseDiv.title = course.name;
+            courseDiv.addEventListener('keydown', (e) => {
+                if (e.target.closest('.course-edit-icon') || e.target.closest('.course-delete-icon')) return;
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToCourse(); }
+            });
+            container.appendChild(courseDiv);
+        }
+
+        function startEditCourseName(courseId, currentName, titleEl, onSave) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'course-title-edit';
+            input.value = currentName;
+            input.maxLength = 255;
+            titleEl.textContent = '';
+            titleEl.appendChild(input);
+            input.focus();
+            input.select();
+            const finish = () => {
+                const newName = input.value.trim();
+                if (newName === currentName || !newName) {
+                    titleEl.removeChild(input);
+                    titleEl.textContent = currentName;
+                    return;
+                }
+                fetch(`${API_BASE}/api/courses/${courseId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName })
+                })
+                    .then(res => res.ok ? res.json() : Promise.reject())
+                    .then(() => {
+                        titleEl.removeChild(input);
+                        titleEl.textContent = newName;
+                        titleEl.closest('.link-item').title = newName;
+                        if (onSave) onSave(newName);
+                    })
+                    .catch(() => {
+                        titleEl.removeChild(input);
+                        titleEl.textContent = currentName;
+                    });
+            };
+            input.addEventListener('blur', finish);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); finish(); }
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    titleEl.removeChild(input);
+                    titleEl.textContent = currentName;
+                }
+            });
+        }
+
+        function setupAddCourse(programId) {
+            const addBtn = document.getElementById('addCourseBtn');
+            const form = document.getElementById('addCourseForm');
+            const input = document.getElementById('newCourseName');
+            const saveBtn = document.getElementById('saveNewCourseBtn');
+            const cancelBtn = document.getElementById('cancelAddCourseBtn');
+            addBtn.addEventListener('click', () => { form.style.display = 'flex'; input.value = ''; input.focus(); });
+            cancelBtn.addEventListener('click', () => { form.style.display = 'none'; input.value = ''; });
+            saveBtn.addEventListener('click', addCourse);
+            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') addCourse(); });
+            function addCourse() {
+                const name = input.value.trim();
+                if (!name) return;
+                fetch(`${API_BASE}/api/courses`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studiengang_id: programId, name })
+                })
+                    .then(res => res.ok ? res.json() : Promise.reject())
+                    .then((course) => {
+                        form.style.display = 'none';
+                        input.value = '';
+                        const container = document.getElementById('links-container');
+                        const p = container.querySelector('p');
+                        if (p) p.remove();
+                        createCourseElement(course, programId);
+                    })
+                    .catch(() => {});
+            }
+        }
+
+        async function loadCourses() {
+            const programId = getProgramIdFromUrl();
+            if (!programId) {
+                document.getElementById('links-container').innerHTML = '<p>Kein Studiengang gewählt.</p>';
+                return;
+            }
+            try {
+                const [programRes, coursesRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/programs/${programId}`),
+                    fetch(`${API_BASE}/api/programs/${programId}/courses`)
+                ]);
+                if (!programRes.ok) throw new Error('Program not found');
+                if (!coursesRes.ok) throw new Error('Courses failed');
+                const program = await programRes.json();
+                const courses = await coursesRes.json();
+                createBreadcrumb(program);
+                const container = document.getElementById('links-container');
+                container.innerHTML = '';
+                if (courses.length > 0) {
+                    courses.forEach(course => createCourseElement(course, programId));
+                } else {
+                    container.innerHTML = '<p>Noch keine Kurse. Nutze + um einen Kurs hinzuzufügen.</p>';
+                }
+                setupAddCourse(programId);
+            } catch (err) {
+                document.getElementById('links-container').innerHTML = '<p>Kurse konnten nicht geladen werden.</p>';
+            }
+        }
+
+        window.addEventListener('load', loadCourses);
+    </script>
+</body>
+</html>

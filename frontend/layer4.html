@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards - OVGU Community Cards</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Banner -->
+        <header class="banner">
+            <img src="./logo/OVGU-Logo.svg" alt="OVGU Logo" class="logo">
+            <h1 class="brutalist-heading-2">Community Cards</h1>
+        </header>
+
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb" id="breadcrumb">
+            <!-- Breadcrumb will be populated by JavaScript -->
+        </nav>
+
+        <!-- Flashcard Section -->
+        <main class="flashcard-section">
+            <div class="flashcard-container">
+                <div class="flashcard-counter-row">
+                    <div class="card-counter" id="card-counter">
+                        <!-- Card counter will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-content" id="flashcard-content">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="flashcard-controls">
+                    <div class="spaced-rep-buttons" id="spaced-rep-buttons">
+                        <button type="button" class="sr-btn-1" data-rating="1">1</button>
+                        <button type="button" class="sr-btn-2" data-rating="2">2</button>
+                        <button type="button" class="sr-btn-3" data-rating="3">3</button>
+                        <button type="button" class="sr-btn-4" data-rating="4">4</button>
+                        <button type="button" class="sr-btn-5" data-rating="5">5</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flashcard-add-row">
+                <button type="button" id="addFlashcardBtn" class="flashcard-add-btn" title="Karteikarte hinzufügen">+</button>
+                <div id="flashcardStyleForm" class="flashcard-style-form">
+                    <h3>Kartenstil wählen</h3>
+                    <div class="flashcard-style-options">
+                        <button type="button" class="flashcard-style-option" data-style="standard">Standard</button>
+                        <button type="button" class="flashcard-style-option" data-style="mnemo">Mnemo</button>
+                        <button type="button" class="flashcard-style-option" data-style="prozess">Prozess</button>
+                        <button type="button" class="flashcard-style-option" data-style="oklusion">Oklusion</button>
+                    </div>
+                    <div class="flashcard-style-form-actions">
+                        <button type="button" id="cancelFlashcardBtn">Abbrechen</button>
+                    </div>
+                </div>
+                <div id="flashcardStandardForm" class="flashcard-type-form">
+                    <h3>Standard-Karteikarte</h3>
+                    <div>
+                        <label for="standardQuestion">Frage</label>
+                        <textarea id="standardQuestion" placeholder="Frage eingeben…" rows="3"></textarea>
+                    </div>
+                    <div>
+                        <label for="standardAnswer">Antwort</label>
+                        <textarea id="standardAnswer" placeholder="Antwort eingeben…" rows="3"></textarea>
+                    </div>
+                    <div class="flashcard-type-form-actions">
+                        <button type="button" id="standardCancelBtn">Abbrechen</button>
+                        <button type="button" id="standardSubmitBtn">Hinzufügen</button>
+                    </div>
+                </div>
+                <div id="flashcardProzessForm" class="flashcard-type-form">
+                    <h3>Prozess-Karteikarte</h3>
+                    <div>
+                        <label for="prozessTitel">Titel</label>
+                        <input type="text" id="prozessTitel" placeholder="Titel eingeben…" maxlength="255">
+                    </div>
+                    <div class="prozess-step-pair">
+                        <label for="prozessSchritt1">Schritt 1</label>
+                        <input type="text" id="prozessSchritt1" placeholder="…" maxlength="500">
+                    </div>
+                    <div>
+                        <input type="text" id="prozessSchritt1Detail" placeholder="…" maxlength="500" aria-label="Schritt 1 Detail">
+                    </div>
+                    <div id="prozessStepsContainer"></div>
+                    <button type="button" id="prozessAddStepBtn" class="prozess-add-step-btn">Schritt hinzufügen</button>
+                    <div class="flashcard-type-form-actions">
+                        <button type="button" id="prozessCancelBtn">Abbrechen</button>
+                        <button type="button" id="prozessSubmitBtn">Hinzufügen</button>
+                    </div>
+                </div>
+                <div id="flashcardMnemoForm" class="flashcard-type-form">
+                    <h3>Mnemo-Karteikarte</h3>
+                    <div>
+                        <label for="mnemoTitel">Titel</label>
+                        <input type="text" id="mnemoTitel" placeholder="Titel eingeben…" maxlength="255">
+                    </div>
+                    <div class="prozess-step-pair">
+                        <label for="mnemoSchluessel1">Schlüssel 1</label>
+                        <input type="text" id="mnemoSchluessel1" placeholder="z.B. Re" maxlength="500">
+                    </div>
+                    <div>
+                        <input type="text" id="mnemoSchluessel1Detail" placeholder="Reich" maxlength="500" aria-label="Schlüssel 1 Detail">
+                    </div>
+                    <div id="mnemoKeysContainer"></div>
+                    <button type="button" id="mnemoAddKeyBtn" class="prozess-add-step-btn">Schlüssel hinzufügen</button>
+                    <div class="flashcard-type-form-actions">
+                        <button type="button" id="mnemoCancelBtn">Abbrechen</button>
+                        <button type="button" id="mnemoSubmitBtn">Hinzufügen</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:3000';
+        let currentFlashcards = [];
+        let currentCardIndex = 0;
+        let isShowingAnswer = false;
+        let prozessStepIndex = 0;
+        let mnemoRevealedIndices = new Set();
+        let currentTopicId = null;
+        let currentProgram = null;
+        let currentCourse = null;
+        let currentTopic = null;
+        let addFlashcardSetupDone = false;
+
+        function getTopicIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('topic');
+        }
+
+        function getProgramLabel(program) {
+            return program.abschluss ? `${program.abschluss} ${program.studiengang}` : program.studiengang;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function createBreadcrumb(program, course, topic) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            const programLabel = getProgramLabel(program);
+            breadcrumb.innerHTML = `
+                <span class="breadcrumb-item">
+                    <a href="index.html" class="breadcrumb-link">${escapeHtml(programLabel)}</a>
+                </span>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-item">
+                    <a href="layer2.html?program=${encodeURIComponent(course.studiengang_id)}" class="breadcrumb-link">${escapeHtml(course.name)}</a>
+                </span>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-item">
+                    <a href="layer3.html?course=${encodeURIComponent(course.id)}" class="breadcrumb-link">${escapeHtml(topic.name)}</a>
+                </span>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-item breadcrumb-current">Karten</span>
+            `;
+        }
+
+        async function loadFlashcards() {
+            const topicId = getTopicIdFromUrl();
+            if (!topicId) {
+                document.getElementById('flashcard-content').innerHTML = '<p>Kein Thema gewählt.</p>';
+                return;
+            }
+            currentTopicId = topicId;
+            try {
+                const topicRes = await fetch(`${API_BASE}/api/topics/${topicId}`);
+                if (!topicRes.ok) throw new Error('Topic not found');
+                const topic = await topicRes.json();
+                currentTopic = topic;
+                const [courseRes, cardsRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/courses/${topic.kurs_id}`),
+                    fetch(`${API_BASE}/api/topics/${topicId}/flashcards`)
+                ]);
+                const course = await courseRes.json();
+                currentCourse = course;
+                const programRes = await fetch(`${API_BASE}/api/programs/${course.studiengang_id}`);
+                const program = await programRes.json();
+                currentProgram = program;
+                createBreadcrumb(program, course, topic);
+                const cards = await cardsRes.json();
+                currentFlashcards = cards.filter(c =>
+                    (c.typ === 'Mnemo' && c.question != null) || (c.typ === 'Prozess' && c.question != null) || (c.question != null && c.answer != null)
+                );
+                currentCardIndex = 0;
+                isShowingAnswer = false;
+                prozessStepIndex = 0;
+                mnemoRevealedIndices.clear();
+                displayCurrentCard();
+                updateCardCounter();
+                if (!addFlashcardSetupDone) {
+                    setupAddFlashcard();
+                    addFlashcardSetupDone = true;
+                }
+            } catch (err) {
+                document.getElementById('flashcard-content').innerHTML = '<p>Karten konnten nicht geladen werden.</p>';
+            }
+        }
+
+        function renderProzessHtml(card, stepIndex) {
+            const titel = card.question || '';
+            const steps = card.steps || [];
+            const n = steps.length;
+            let html = '<div class="prozess-header">';
+            html += '<span class="prozess-label">Prozess:</span>';
+            html += '<span class="prozess-title">' + escapeHtml(titel) + '</span>';
+            html += '</div>';
+            if (n === 0) {
+                html += '<p>' + escapeHtml(titel) + '</p>';
+            } else {
+                for (let i = 0; i < n; i++) {
+                    if (i <= stepIndex) {
+                        html += '<div class="prozess-step-block prozess-question">';
+                        html += '<span class="prozess-step-num">' + (i + 1) + '.</span>';
+                        html += '<p>' + escapeHtml(steps[i].frage) + '</p></div>';
+                    }
+                    if (i < stepIndex) {
+                        html += '<div class="prozess-step-block prozess-answer"><p>' + escapeHtml(steps[i].antwort) + '</p></div>';
+                    }
+                }
+            }
+            return html;
+        }
+
+        function renderMnemoHtml(card) {
+            const keys = card.keys || [];
+            const n = keys.length;
+            let html = '<div class="mnemo-header">';
+            html += '<span class="mnemo-label">Mnemo:</span>';
+            html += '<span class="mnemo-title">' + escapeHtml(card.question || '') + '</span>';
+            html += '</div>';
+            html += '<div class="mnemo-keys-row">';
+            for (let i = 0; i < n; i++) {
+                const revealedClass = 'mnemo-key-btn' + (mnemoRevealedIndices.has(i) ? ' revealed' : '');
+                html += '<button type="button" class="' + revealedClass + '" data-key-index="' + i + '">' + escapeHtml(keys[i].schluessel) + '</button>';
+            }
+            const allRevealed = mnemoRevealedIndices.size === n;
+            html += '<button type="button" class="mnemo-reveal-all-btn">' + (allRevealed ? 'Alle verstecken' : 'Alle aufdecken') + '</button>';
+            html += '</div>';
+            html += '<div class="mnemo-inhalte">';
+            const sortedRevealed = Array.from(mnemoRevealedIndices).sort((a, b) => a - b);
+            for (const i of sortedRevealed) {
+                html += '<div class="mnemo-inhalt-block">' + escapeHtml(keys[i].inhalt) + '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function attachMnemoHandlers(card) {
+            const flashcardContent = document.getElementById('flashcard-content');
+            const keys = card.keys || [];
+            flashcardContent.querySelectorAll('.mnemo-key-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const idx = parseInt(btn.getAttribute('data-key-index'), 10);
+                    if (mnemoRevealedIndices.has(idx)) {
+                        mnemoRevealedIndices.delete(idx);
+                    } else {
+                        mnemoRevealedIndices.add(idx);
+                    }
+                    displayCurrentCard();
+                });
+            });
+            const revealAllBtn = flashcardContent.querySelector('.mnemo-reveal-all-btn');
+            if (revealAllBtn) {
+                revealAllBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (mnemoRevealedIndices.size === keys.length) {
+                        mnemoRevealedIndices.clear();
+                    } else {
+                        for (let i = 0; i < keys.length; i++) {
+                            mnemoRevealedIndices.add(i);
+                        }
+                    }
+                    displayCurrentCard();
+                });
+            }
+        }
+
+        function displayCurrentCard() {
+            const flashcardContent = document.getElementById('flashcard-content');
+            const flashcard = document.getElementById('flashcard');
+            const ratingRow = document.getElementById('spaced-rep-buttons');
+            if (currentFlashcards.length === 0) {
+                flashcardContent.innerHTML = '<p>Noch keine Karten. Nutze + um eine Karteikarte hinzuzufügen.</p>';
+                flashcard.classList.remove('showing-answer', 'prozess-flashcard', 'mnemo-flashcard');
+                if (ratingRow) ratingRow.style.visibility = 'hidden';
+                return;
+            }
+            if (ratingRow) ratingRow.style.visibility = '';
+            if (currentCardIndex >= currentFlashcards.length) {
+                currentCardIndex = 0;
+            }
+            const currentCard = currentFlashcards[currentCardIndex];
+            const isProzess = currentCard.typ === 'Prozess' && currentCard.steps && currentCard.steps.length > 0;
+            const isMnemo = currentCard.typ === 'Mnemo' && currentCard.keys && currentCard.keys.length > 0;
+            if (isProzess) {
+                flashcard.classList.add('prozess-flashcard');
+                flashcard.classList.remove('mnemo-flashcard', 'showing-answer');
+                flashcardContent.innerHTML = renderProzessHtml(currentCard, prozessStepIndex);
+            } else if (isMnemo) {
+                flashcard.classList.add('mnemo-flashcard');
+                flashcard.classList.remove('prozess-flashcard', 'showing-answer');
+                flashcardContent.innerHTML = renderMnemoHtml(currentCard);
+                attachMnemoHandlers(currentCard);
+            } else {
+                flashcard.classList.remove('prozess-flashcard', 'mnemo-flashcard');
+                if (isShowingAnswer) {
+                    flashcardContent.innerHTML = `
+                        <div class="flashcard-question">
+                            <p>${escapeHtml(currentCard.question)}</p>
+                        </div>
+                        <div class="flashcard-answer">
+                            <p>${escapeHtml(currentCard.answer)}</p>
+                        </div>
+                    `;
+                    flashcard.classList.add('showing-answer');
+                } else {
+                    flashcardContent.innerHTML = `
+                        <div class="flashcard-question">
+                            <p>${escapeHtml(currentCard.question)}</p>
+                        </div>
+                    `;
+                    flashcard.classList.remove('showing-answer');
+                }
+            }
+        }
+
+        // Update card counter
+        function updateCardCounter() {
+            const counter = document.getElementById('card-counter');
+            const total = currentFlashcards.length;
+            counter.textContent = total === 0 ? '0 / 0' : `${currentCardIndex + 1} / ${total}`;
+        }
+
+        // Toggle: for Prozess cards advance step; for Standard toggle question/answer; Mnemo uses key buttons only
+        function toggleFlashcard() {
+            const currentCard = currentFlashcards[currentCardIndex];
+            const isMnemo = currentCard && currentCard.typ === 'Mnemo' && currentCard.keys && currentCard.keys.length > 0;
+            if (isMnemo) return;
+            const isProzess = currentCard && currentCard.typ === 'Prozess' && currentCard.steps && currentCard.steps.length > 0;
+            if (isProzess) {
+                const n = currentCard.steps.length;
+                prozessStepIndex += 1;
+                if (prozessStepIndex > n) prozessStepIndex = 0;
+                displayCurrentCard();
+            } else {
+                isShowingAnswer = !isShowingAnswer;
+                displayCurrentCard();
+            }
+        }
+
+        // Go to next card (rating buttons: do not show answer, just advance)
+        function goToNextCard() {
+            if (currentFlashcards.length === 0) return;
+            prozessStepIndex = 0;
+            mnemoRevealedIndices.clear();
+            currentCardIndex = (currentCardIndex + 1) % currentFlashcards.length;
+            isShowingAnswer = false;
+            displayCurrentCard();
+            updateCardCounter();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            const flashcard = document.getElementById('flashcard');
+            const ratingButtons = document.querySelectorAll('.spaced-rep-buttons button');
+
+            // Click on flashcard to toggle question/answer
+            flashcard.addEventListener('click', toggleFlashcard);
+
+            // Rating buttons 1–5: advance to next card only
+            ratingButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    goToNextCard();
+                });
+            });
+        }
+
+        function setupAddFlashcard() {
+            const addBtn = document.getElementById('addFlashcardBtn');
+            const form = document.getElementById('flashcardStyleForm');
+            const cancelBtn = document.getElementById('cancelFlashcardBtn');
+            const styleOptions = form.querySelectorAll('.flashcard-style-option');
+            const standardForm = document.getElementById('flashcardStandardForm');
+            const standardQuestion = document.getElementById('standardQuestion');
+            const standardAnswer = document.getElementById('standardAnswer');
+            const standardCancelBtn = document.getElementById('standardCancelBtn');
+            const standardSubmitBtn = document.getElementById('standardSubmitBtn');
+            const prozessForm = document.getElementById('flashcardProzessForm');
+            const prozessTitel = document.getElementById('prozessTitel');
+            const prozessStepsContainer = document.getElementById('prozessStepsContainer');
+            const prozessAddStepBtn = document.getElementById('prozessAddStepBtn');
+            const prozessCancelBtn = document.getElementById('prozessCancelBtn');
+            const prozessSubmitBtn = document.getElementById('prozessSubmitBtn');
+            const mnemoForm = document.getElementById('flashcardMnemoForm');
+            const mnemoTitel = document.getElementById('mnemoTitel');
+            const mnemoKeysContainer = document.getElementById('mnemoKeysContainer');
+            const mnemoAddKeyBtn = document.getElementById('mnemoAddKeyBtn');
+            const mnemoCancelBtn = document.getElementById('mnemoCancelBtn');
+            const mnemoSubmitBtn = document.getElementById('mnemoSubmitBtn');
+            const flashcardContainer = document.querySelector('.flashcard-container');
+            if (!addBtn || !form) return;
+            let prozessStepCount = 2;
+            let mnemoKeyCount = 2;
+            const mnemoPlaceholders = [
+                { key: 'z.B. Re', detail: 'Reich' },
+                { key: 'z.B. St', detail: 'Stamm' },
+                { key: 'z.B. Kl', detail: 'Klasse' },
+                { key: 'z.B. Or', detail: 'Ordnung' },
+                { key: 'z.B. Fa', detail: 'Familie' },
+                { key: 'z.B. Ga', detail: 'Gattung' },
+                { key: 'z.B. Sp', detail: 'Spezies' }
+            ];
+
+            function showCardArea() {
+                if (flashcardContainer) flashcardContainer.classList.remove('is-hidden');
+                addBtn.classList.remove('is-hidden');
+            }
+            function hideCardArea() {
+                if (flashcardContainer) flashcardContainer.classList.add('is-hidden');
+            }
+
+            function closeStyleForm() {
+                form.classList.remove('is-open');
+                showCardArea();
+            }
+            function closeStyleFormKeepHidden() {
+                form.classList.remove('is-open');
+            }
+            function openForm() {
+                hideCardArea();
+                form.classList.add('is-open');
+                addBtn.classList.add('is-hidden');
+            }
+            function closeStandardForm() {
+                standardForm.classList.remove('is-open');
+                standardQuestion.value = '';
+                standardAnswer.value = '';
+                showCardArea();
+            }
+            function closeProzessForm() {
+                prozessForm.classList.remove('is-open');
+                if (prozessTitel) prozessTitel.value = '';
+                const s1 = document.getElementById('prozessSchritt1');
+                const s1d = document.getElementById('prozessSchritt1Detail');
+                if (s1) s1.value = '';
+                if (s1d) s1d.value = '';
+                if (prozessStepsContainer) prozessStepsContainer.innerHTML = '';
+                prozessStepCount = 2;
+                showCardArea();
+            }
+            function closeMnemoForm() {
+                if (mnemoForm) mnemoForm.classList.remove('is-open');
+                if (mnemoTitel) mnemoTitel.value = '';
+                const m1 = document.getElementById('mnemoSchluessel1');
+                const m1d = document.getElementById('mnemoSchluessel1Detail');
+                if (m1) m1.value = '';
+                if (m1d) m1d.value = '';
+                if (mnemoKeysContainer) mnemoKeysContainer.innerHTML = '';
+                mnemoKeyCount = 2;
+                showCardArea();
+            }
+
+            addBtn.onclick = openForm;
+            cancelBtn.onclick = closeStyleForm;
+            styleOptions.forEach(btn => {
+                btn.onclick = () => {
+                    const style = btn.dataset.style;
+                    closeStyleFormKeepHidden();
+                    if (style === 'standard') {
+                        standardForm.classList.add('is-open');
+                    } else if (style === 'prozess') {
+                        prozessStepCount = 2;
+                        if (prozessStepsContainer) prozessStepsContainer.innerHTML = '';
+                        prozessForm.classList.add('is-open');
+                    } else if (style === 'mnemo') {
+                        mnemoKeyCount = 2;
+                        if (mnemoKeysContainer) mnemoKeysContainer.innerHTML = '';
+                        if (mnemoForm) mnemoForm.classList.add('is-open');
+                    } else {
+                        showCardArea();
+                    }
+                };
+            });
+            standardCancelBtn.onclick = closeStandardForm;
+            standardSubmitBtn.onclick = async () => {
+                const question = standardQuestion.value.trim();
+                const answer = standardAnswer.value.trim();
+                if (!question || !answer || !currentTopicId) {
+                    closeStandardForm();
+                    return;
+                }
+                try {
+                    const res = await fetch(`${API_BASE}/api/flashcards`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ topic_id: currentTopicId, question, answer, style: 'standard' })
+                    });
+                    if (!res.ok) throw new Error();
+                    closeStandardForm();
+                    await loadFlashcards();
+                } catch (e) {
+                    closeStandardForm();
+                }
+            };
+
+            if (prozessCancelBtn) prozessCancelBtn.onclick = closeProzessForm;
+            if (prozessAddStepBtn) {
+                prozessAddStepBtn.onclick = () => {
+                    const n = prozessStepCount;
+                    const pair = document.createElement('div');
+                    pair.className = 'prozess-step-pair';
+                    pair.innerHTML = `
+                        <label for="prozessSchritt${n}">Schritt ${n}</label>
+                        <input type="text" id="prozessSchritt${n}" placeholder="…" maxlength="500">
+                    `;
+                    prozessStepsContainer.appendChild(pair);
+                    const detail = document.createElement('div');
+                    detail.innerHTML = `<input type="text" id="prozessSchritt${n}Detail" placeholder="…" maxlength="500" aria-label="Schritt ${n} Detail">`;
+                    prozessStepsContainer.appendChild(detail);
+                    prozessStepCount += 1;
+                };
+            }
+            if (prozessSubmitBtn) {
+                prozessSubmitBtn.onclick = async () => {
+                    const titel = prozessTitel ? prozessTitel.value.trim() : '';
+                    if (!titel || !currentTopicId) {
+                        closeProzessForm();
+                        return;
+                    }
+                    const steps = [];
+                    const s1 = document.getElementById('prozessSchritt1');
+                    const s1d = document.getElementById('prozessSchritt1Detail');
+                    if (s1 && s1d) {
+                        steps.push({ frage: s1.value.trim(), antwort: s1d.value.trim() });
+                    }
+                    for (let i = 2; i < prozessStepCount; i++) {
+                        const fn = document.getElementById(`prozessSchritt${i}`);
+                        const fd = document.getElementById(`prozessSchritt${i}Detail`);
+                        if (fn && fd) {
+                            steps.push({ frage: fn.value.trim(), antwort: fd.value.trim() });
+                        }
+                    }
+                    if (steps.length === 0) {
+                        closeProzessForm();
+                        return;
+                    }
+                    try {
+                        const res = await fetch(`${API_BASE}/api/flashcards`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ topic_id: currentTopicId, style: 'prozess', titel, steps })
+                        });
+                        if (!res.ok) throw new Error();
+                        closeProzessForm();
+                        await loadFlashcards();
+                    } catch (e) {
+                        closeProzessForm();
+                    }
+                };
+            }
+            if (mnemoCancelBtn) mnemoCancelBtn.onclick = closeMnemoForm;
+            if (mnemoAddKeyBtn) {
+                mnemoAddKeyBtn.onclick = () => {
+                    const n = mnemoKeyCount;
+                    const ph = mnemoPlaceholders[n - 1] || { key: '…', detail: '…' };
+                    const pair = document.createElement('div');
+                    pair.className = 'prozess-step-pair';
+                    pair.innerHTML = `
+                        <label for="mnemoSchluessel${n}">Schlüssel ${n}</label>
+                        <input type="text" id="mnemoSchluessel${n}" placeholder="${ph.key.replace(/"/g, '&quot;')}" maxlength="500">
+                    `;
+                    mnemoKeysContainer.appendChild(pair);
+                    const detail = document.createElement('div');
+                    detail.innerHTML = `<input type="text" id="mnemoSchluessel${n}Detail" placeholder="${ph.detail.replace(/"/g, '&quot;')}" maxlength="500" aria-label="Schlüssel ${n} Detail">`;
+                    mnemoKeysContainer.appendChild(detail);
+                    mnemoKeyCount += 1;
+                };
+            }
+            if (mnemoSubmitBtn) {
+                mnemoSubmitBtn.onclick = async () => {
+                    const title = mnemoTitel ? mnemoTitel.value.trim() : '';
+                    if (!title || !currentTopicId) {
+                        closeMnemoForm();
+                        return;
+                    }
+                    const keys = [];
+                    const m1 = document.getElementById('mnemoSchluessel1');
+                    const m1d = document.getElementById('mnemoSchluessel1Detail');
+                    if (m1 && m1d) {
+                        keys.push({ schluessel: m1.value.trim(), inhalt: m1d.value.trim() });
+                    }
+                    for (let i = 2; i < mnemoKeyCount; i++) {
+                        const kn = document.getElementById(`mnemoSchluessel${i}`);
+                        const kd = document.getElementById(`mnemoSchluessel${i}Detail`);
+                        if (kn && kd) {
+                            keys.push({ schluessel: kn.value.trim(), inhalt: kd.value.trim() });
+                        }
+                    }
+                    if (keys.length === 0) {
+                        closeMnemoForm();
+                        return;
+                    }
+                    try {
+                        const res = await fetch(`${API_BASE}/api/flashcards`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ topic_id: currentTopicId, style: 'mnemo', title, keys })
+                        });
+                        if (!res.ok) throw new Error();
+                        closeMnemoForm();
+                        await loadFlashcards();
+                    } catch (e) {
+                        closeMnemoForm();
+                    }
+                };
+            }
+        }
+
+        window.addEventListener('load', function() {
+            loadFlashcards();
+            setupEventListeners();
+        });
+    </script>
+</body>
+</html>

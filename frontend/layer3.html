@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topics - OVGU Community Cards</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Banner -->
+        <header class="banner">
+            <img src="./logo/OVGU-Logo.svg" alt="OVGU Logo" class="logo">
+            <h1 class="brutalist-heading-2">Community Cards</h1>
+        </header>
+
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb" id="breadcrumb">
+            <!-- Breadcrumb will be populated by JavaScript -->
+        </nav>
+
+        <!-- Topics Section -->
+        <main class="topics-section">
+            <div id="topics-container">
+                <!-- Topics will be populated by JavaScript -->
+            </div>
+            <div class="add-topic-row">
+                <button type="button" id="addTopicBtn" class="add-topic-btn" title="Thema hinzufügen">+</button>
+                <div id="addTopicForm" class="add-topic-form" style="display: none;">
+                    <input type="text" id="newTopicName" placeholder="Themenname" maxlength="255">
+                    <button type="button" id="saveNewTopicBtn">Hinzufügen</button>
+                    <button type="button" id="cancelAddTopicBtn">Abbrechen</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:3000';
+
+        function getCourseIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('course');
+        }
+
+        function getProgramLabel(program) {
+            return program.abschluss ? `${program.abschluss} ${program.studiengang}` : program.studiengang;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function createBreadcrumb(program, course) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            const programLabel = getProgramLabel(program);
+            breadcrumb.innerHTML = `
+                <span class="breadcrumb-item">
+                    <a href="index.html" class="breadcrumb-link">${escapeHtml(programLabel)}</a>
+                </span>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-item">
+                    <a href="layer2.html?program=${encodeURIComponent(course.studiengang_id)}" class="breadcrumb-link">${escapeHtml(course.name)}</a>
+                </span>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-item breadcrumb-current">Themen</span>
+            `;
+        }
+
+        function createTopicElement(topic, courseId) {
+            const container = document.getElementById('topics-container');
+            const topicDiv = document.createElement('div');
+            topicDiv.className = 'topic-item';
+            topicDiv.dataset.topicId = topic.id;
+            topicDiv.innerHTML = `
+                <div class="topic-actions">
+                    <button type="button" class="topic-delete-icon" aria-label="Thema löschen" title="Thema löschen">&#10008;</button>
+                    <button type="button" class="topic-edit-icon" aria-label="Themenname bearbeiten" title="Themenname bearbeiten">&#9998;</button>
+                </div>
+                <div class="topic-content">
+                    <div class="topic-title" data-topic-id="${topic.id}">${escapeHtml(topic.name)}</div>
+                </div>
+            `;
+            const titleEl = topicDiv.querySelector('.topic-title');
+            const editBtn = topicDiv.querySelector('.topic-edit-icon');
+            const deleteBtn = topicDiv.querySelector('.topic-delete-icon');
+            const goToTopic = () => { window.location.href = `layer4.html?topic=${encodeURIComponent(topic.id)}`; };
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                startEditTopicName(topic.id, topic.name, titleEl, (newName) => { titleEl.textContent = newName; });
+            });
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (!confirm('Thema wirklich löschen?')) return;
+                fetch(`${API_BASE}/api/topics/${topic.id}`, { method: 'DELETE' })
+                    .then(res => res.ok ? undefined : Promise.reject())
+                    .then(() => topicDiv.remove())
+                    .catch(() => {});
+            });
+            topicDiv.addEventListener('click', (e) => {
+                if (e.target.closest('.topic-edit-icon') || e.target.closest('.topic-delete-icon')) return;
+                goToTopic();
+            });
+            topicDiv.setAttribute('tabindex', '0');
+            topicDiv.setAttribute('role', 'button');
+            topicDiv.title = topic.name;
+            topicDiv.addEventListener('keydown', (e) => {
+                if (e.target.closest('.topic-edit-icon') || e.target.closest('.topic-delete-icon')) return;
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToTopic(); }
+            });
+            container.appendChild(topicDiv);
+        }
+
+        function startEditTopicName(topicId, currentName, titleEl, onSave) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'topic-title-edit';
+            input.value = currentName;
+            input.maxLength = 255;
+            titleEl.textContent = '';
+            titleEl.appendChild(input);
+            input.focus();
+            input.select();
+            const finish = () => {
+                const newName = input.value.trim();
+                if (newName === currentName || !newName) {
+                    titleEl.removeChild(input);
+                    titleEl.textContent = currentName;
+                    return;
+                }
+                fetch(`${API_BASE}/api/topics/${topicId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName })
+                })
+                    .then(res => res.ok ? res.json() : Promise.reject())
+                    .then(() => {
+                        titleEl.removeChild(input);
+                        titleEl.textContent = newName;
+                        titleEl.closest('.topic-item').title = newName;
+                        if (onSave) onSave(newName);
+                    })
+                    .catch(() => {
+                        titleEl.removeChild(input);
+                        titleEl.textContent = currentName;
+                    });
+            };
+            input.addEventListener('blur', finish);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); finish(); }
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    titleEl.removeChild(input);
+                    titleEl.textContent = currentName;
+                }
+            });
+        }
+
+        function setupAddTopic(courseId) {
+            const addBtn = document.getElementById('addTopicBtn');
+            const form = document.getElementById('addTopicForm');
+            const input = document.getElementById('newTopicName');
+            const saveBtn = document.getElementById('saveNewTopicBtn');
+            const cancelBtn = document.getElementById('cancelAddTopicBtn');
+            addBtn.addEventListener('click', () => { form.style.display = 'flex'; input.value = ''; input.focus(); });
+            cancelBtn.addEventListener('click', () => { form.style.display = 'none'; input.value = ''; });
+            saveBtn.addEventListener('click', addTopic);
+            input.addEventListener('keydown', (e) => { if (e.key === 'Enter') addTopic(); });
+            function addTopic() {
+                const name = input.value.trim();
+                if (!name) return;
+                fetch(`${API_BASE}/api/topics`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ kurs_id: courseId, name })
+                })
+                    .then(res => res.ok ? res.json() : Promise.reject())
+                    .then((topic) => {
+                        form.style.display = 'none';
+                        input.value = '';
+                        const container = document.getElementById('topics-container');
+                        const p = container.querySelector('p');
+                        if (p) p.remove();
+                        createTopicElement(topic, courseId);
+                    })
+                    .catch(() => {});
+            }
+        }
+
+        async function loadTopics() {
+            const courseId = getCourseIdFromUrl();
+            if (!courseId) {
+                document.getElementById('topics-container').innerHTML = '<p>Kein Kurs gewählt.</p>';
+                return;
+            }
+            try {
+                const courseRes = await fetch(`${API_BASE}/api/courses/${courseId}`);
+                if (!courseRes.ok) throw new Error('Course not found');
+                const course = await courseRes.json();
+                const [programRes, topicsRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/programs/${course.studiengang_id}`),
+                    fetch(`${API_BASE}/api/courses/${courseId}/topics`)
+                ]);
+                if (!programRes.ok) throw new Error('Program not found');
+                if (!topicsRes.ok) throw new Error('Topics failed');
+                const program = await programRes.json();
+                const topics = await topicsRes.json();
+                createBreadcrumb(program, course);
+                const container = document.getElementById('topics-container');
+                container.innerHTML = '';
+                if (topics.length > 0) {
+                    topics.forEach(topic => createTopicElement(topic, courseId));
+                } else {
+                    container.innerHTML = '<p>Noch keine Themen. Nutze + um ein Thema hinzuzufügen.</p>';
+                }
+                setupAddTopic(courseId);
+            } catch (err) {
+                document.getElementById('topics-container').innerHTML = '<p>Themen konnten nicht geladen werden.</p>';
+            }
+        }
+
+        window.addEventListener('load', loadTopics);
+    </script>
+</body>
+</html>
