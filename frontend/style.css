@@ -17,52 +17,6 @@ body {
     margin: 0 auto;
 }
 
-/* Banner styles */
-.banner {
-    display: flex;
-    justify-content: center;
-    gap: 0px;
-    margin-bottom: 16px;
-    border: 8px solid #000000;
-    box-shadow: 
-    8px 8px 0 #000000,
-    16px 16px 0 hsl(329,100%,23.9%);
-    background: hsl(0, 0%, 100%);
-    transform: skew(-5deg);
-}
-
-/* AGGRESSIVE BRUTALIST HEADING */
-.brutalist-heading-2 {
-    font-size: 3.5rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 6px;
-    line-height: 1;
-    color: hsl(329,100%,23.9%);
-    background: hsl(0, 0%, 100%);
-    padding: 10px 0px;
-    margin-top: 8px;
-    display: inline-block;
-    transition: all 0.15s ease;
-    position: relative;
-}
-
-.brutalist-heading-2:hover {
-    transform: translate(-4px, -4px);
-    text-shadow: 
-        4px 4px 0 #000000,
-        8px 8px 0 hsl(329,100%,35%),
-        12px 12px 0 hsl(329,100%,50%);
-}
-
-/* Logo styles */
-.logo {
-    width: 250px;
-    height: 100px;
-    margin-top: 2px;
-    transform: skew(5deg);
-}
-
 /* Breadcrumb Navigation */
 .breadcrumb {
     background: transparent;
@@ -874,12 +828,6 @@ body {
     #links-container {
         grid-template-columns: repeat(2, 1fr);
         max-width: 600px;
-    }
-    
-    .brutalist-heading-2 {
-        font-size: 2.5rem;
-        letter-spacing: 4px;
-        padding: 15px 30px;
     }
     
     .container {
