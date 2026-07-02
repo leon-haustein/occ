@@ -5,130 +5,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flashcards - OVGU Community Cards</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="vendor/katex/katex.min.css">
 </head>
-<body>
+<body class="bg-layer4 layer4-app">
     <div class="container">
-        <!-- Breadcrumb Navigation -->
-        <nav class="breadcrumb" id="breadcrumb">
-            <!-- Breadcrumb will be populated by JavaScript -->
-        </nav>
-
-        <!-- Flashcard Section -->
-        <main class="flashcard-section">
-            <div class="flashcard-container">
-                <div class="flashcard-counter-row">
-                    <div class="card-counter" id="card-counter">
-                        <!-- Card counter will be populated by JavaScript -->
+        <div class="layer-row">
+            <div class="layer-links-stack">
+                <div class="layer-header">
+                    <!-- Breadcrumb Navigation -->
+                    <nav class="breadcrumb" id="breadcrumb">
+                        <!-- Breadcrumb will be populated by JavaScript -->
+                    </nav>
+                    <div class="layer-header-end">
+                        <p class="layer-brand">Karten</p>
+                        <div class="header-action-row">
+                            <button type="button" id="addFlashcardBtn" class="header-action-add-btn" title="Karteikarte hinzufügen">+</button>
+                            <button type="button" class="cards-manage-btn" title="Kartenverwaltung" aria-label="Kartenverwaltung" aria-pressed="false">
+                                <span class="cards-manage-btn__icon" aria-hidden="true">
+                                    <span></span><span></span><span></span><span></span>
+                                </span>
+                                <span class="cards-manage-btn__label"></span>
+                            </button>
+                            <button type="button" class="layer-login-btn" title="Login">Login</button>
+                        </div>
                     </div>
                 </div>
-                <div class="flashcard" id="flashcard">
-                    <div class="flashcard-content" id="flashcard-content">
-                        <!-- Content will be populated by JavaScript -->
+                <main class="flashcard-section">
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-content" id="flashcard-content">
+                            <!-- Content will be populated by JavaScript -->
+                        </div>
+                        <div class="sticker-bar">
+                            <div class="flashcard-vote-group">
+                                <button type="button" class="upvote-icon icon-btn" aria-label="Karte positiv bewerten" title="Positiv bewerten"></button>
+                                <button type="button" class="downvote-icon icon-btn" aria-label="Karte negativ bewerten" title="Negativ bewerten"></button>
+                                <button type="button" class="comment-icon icon-btn" aria-label="Karte kommentieren" title="Kommentieren"></button>
+                            </div>
+                            <div class="flashcard-controls">
+                                <div class="spaced-rep-buttons" id="spaced-rep-buttons">
+                                    <button type="button" class="sr-btn-1" data-rating="1"></button>
+                                    <button type="button" class="sr-btn-2" data-rating="2"></button>
+                                    <button type="button" class="sr-btn-3" data-rating="3"></button>
+                                </div>
+                            </div>
+                            <div class="flashcard-flex-column">
+                                <div class="sr-progress-bars"></div>
+                                <button type="button" class="delete-icon" aria-label="Karteikarte löschen" title="Karteikarte löschen"></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="flashcard-controls">
-                    <div class="spaced-rep-buttons" id="spaced-rep-buttons">
-                        <button type="button" class="sr-btn-1" data-rating="1">1</button>
-                        <button type="button" class="sr-btn-2" data-rating="2">2</button>
-                        <button type="button" class="sr-btn-3" data-rating="3">3</button>
-                        <button type="button" class="sr-btn-4" data-rating="4">4</button>
-                        <button type="button" class="sr-btn-5" data-rating="5">5</button>
-                    </div>
-                </div>
+                </main>
             </div>
-            <div class="flashcard-add-row">
-                <button type="button" id="addFlashcardBtn" class="flashcard-add-btn" title="Karteikarte hinzufügen">+</button>
-                <div id="flashcardStyleForm" class="flashcard-style-form">
-                    <h3>Kartenstil wählen</h3>
-                    <div class="flashcard-style-options">
-                        <button type="button" class="flashcard-style-option" data-style="standard">Standard</button>
-                        <button type="button" class="flashcard-style-option" data-style="mnemo">Mnemo</button>
-                        <button type="button" class="flashcard-style-option" data-style="prozess">Prozess</button>
-                        <button type="button" class="flashcard-style-option" data-style="oklusion">Oklusion</button>
-                    </div>
-                    <div class="flashcard-style-form-actions">
-                        <button type="button" id="cancelFlashcardBtn">Abbrechen</button>
-                    </div>
-                </div>
-                <div id="flashcardStandardForm" class="flashcard-type-form">
-                    <h3>Standard-Karteikarte</h3>
-                    <div>
-                        <label for="standardQuestion">Frage</label>
-                        <textarea id="standardQuestion" placeholder="Frage eingeben…" rows="3"></textarea>
-                    </div>
-                    <div>
-                        <label for="standardAnswer">Antwort</label>
-                        <textarea id="standardAnswer" placeholder="Antwort eingeben…" rows="3"></textarea>
-                    </div>
-                    <div class="flashcard-type-form-actions">
-                        <button type="button" id="standardCancelBtn">Abbrechen</button>
-                        <button type="button" id="standardSubmitBtn">Hinzufügen</button>
-                    </div>
-                </div>
-                <div id="flashcardProzessForm" class="flashcard-type-form">
-                    <h3>Prozess-Karteikarte</h3>
-                    <div>
-                        <label for="prozessTitel">Titel</label>
-                        <input type="text" id="prozessTitel" placeholder="Titel eingeben…" maxlength="255">
-                    </div>
-                    <div class="prozess-step-pair">
-                        <label for="prozessSchritt1">Schritt 1</label>
-                        <input type="text" id="prozessSchritt1" placeholder="…" maxlength="500">
-                    </div>
-                    <div>
-                        <input type="text" id="prozessSchritt1Detail" placeholder="…" maxlength="500" aria-label="Schritt 1 Detail">
-                    </div>
-                    <div id="prozessStepsContainer"></div>
-                    <button type="button" id="prozessAddStepBtn" class="prozess-add-step-btn">Schritt hinzufügen</button>
-                    <div class="flashcard-type-form-actions">
-                        <button type="button" id="prozessCancelBtn">Abbrechen</button>
-                        <button type="button" id="prozessSubmitBtn">Hinzufügen</button>
-                    </div>
-                </div>
-                <div id="flashcardMnemoForm" class="flashcard-type-form">
-                    <h3>Mnemo-Karteikarte</h3>
-                    <div>
-                        <label for="mnemoTitel">Titel</label>
-                        <input type="text" id="mnemoTitel" placeholder="Titel eingeben…" maxlength="255">
-                    </div>
-                    <div class="prozess-step-pair">
-                        <label for="mnemoSchluessel1">Schlüssel 1</label>
-                        <input type="text" id="mnemoSchluessel1" placeholder="z.B. Re" maxlength="500">
-                    </div>
-                    <div>
-                        <input type="text" id="mnemoSchluessel1Detail" placeholder="Reich" maxlength="500" aria-label="Schlüssel 1 Detail">
-                    </div>
-                    <div id="mnemoKeysContainer"></div>
-                    <button type="button" id="mnemoAddKeyBtn" class="prozess-add-step-btn">Schlüssel hinzufügen</button>
-                    <div class="flashcard-type-form-actions">
-                        <button type="button" id="mnemoCancelBtn">Abbrechen</button>
-                        <button type="button" id="mnemoSubmitBtn">Hinzufügen</button>
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 
-    <script>
+    <div id="flashcardStyleModal" class="flashcard-style-modal" aria-hidden="true">
+                    <div id="flashcardStyleForm" class="flashcard-style-form" role="dialog" aria-modal="true" aria-labelledby="flashcardStyleTitle">
+                        <button type="button" id="cancelFlashcardBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <h3 id="flashcardStyleTitle">Kartenstil wählen</h3>
+                        <div class="flashcard-style-options">
+                            <button type="button" class="flashcard-style-option" data-style="standard">
+                                <span class="style-option-icon" aria-hidden="true"></span>
+                                <span>Standard</span>
+                            </button>
+                            <button type="button" class="flashcard-style-option" data-style="mnemo">
+                                <span class="style-option-icon" aria-hidden="true"></span>
+                                <span>Mnemo</span>
+                            </button>
+                            <button type="button" class="flashcard-style-option" data-style="prozess">
+                                <span class="style-option-icon" aria-hidden="true"></span>
+                                <span>Prozess</span>
+                            </button>
+                            <button type="button" class="flashcard-style-option" data-style="oklusion">
+                                <span class="style-option-icon" aria-hidden="true"></span>
+                                <span>Oklusion</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="flashcardTypeModal" class="flashcard-type-modal" aria-hidden="true">
+                    <div class="flashcard-type-form-wrap">
+                        <button type="button" id="standardCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <div id="flashcardStandardForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardStandardTitle">
+                        <h3 id="flashcardStandardTitle">Standard-Karteikarte</h3>
+                        <div class="flashcard-form-error" role="alert" hidden></div>
+                        <div>
+                            <label for="standardQuestion">Frage</label>
+                            <textarea id="standardQuestion" placeholder="Frage eingeben…" rows="3"></textarea>
+                        </div>
+                        <div>
+                            <label for="standardAnswer">Antwort</label>
+                            <textarea id="standardAnswer" placeholder="Antwort eingeben…" rows="3"></textarea>
+                        </div>
+                        <div class="flashcard-type-form-actions">
+                            <button type="button" id="standardSubmitBtn">Hinzufügen</button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-type-form-wrap">
+                        <button type="button" id="prozessCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <div id="flashcardProzessForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardProzessTitle">
+                        <h3 id="flashcardProzessTitle">Prozess-Karteikarte</h3>
+                        <div class="flashcard-form-error" role="alert" hidden></div>
+                        <div>
+                            <label for="prozessTitel">Titel</label>
+                            <input type="text" id="prozessTitel" placeholder="Titel eingeben…" maxlength="40">
+                        </div>
+                        <div id="prozessStepsContainer">
+                            <div class="flashcard-entry-block" data-entry-type="prozess">
+                                <div class="flashcard-entry-header">
+                                    <label for="prozessSchritt1">Schritt 1</label>
+                                    <button type="button" class="flashcard-entry-remove" title="Schritt entfernen" aria-label="Schritt 1 entfernen">×</button>
+                                </div>
+                                <textarea id="prozessSchritt1" data-field="frage" placeholder="…" rows="3"></textarea>
+                                <textarea id="prozessSchritt1Detail" data-field="antwort" placeholder="…" rows="3" aria-label="Schritt 1 Detail"></textarea>
+                            </div>
+                        </div>
+                        <button type="button" id="prozessAddStepBtn" class="prozess-add-step-btn">Schritt hinzufügen</button>
+                        <div class="flashcard-type-form-actions">
+                            <button type="button" id="prozessSubmitBtn">Hinzufügen</button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-type-form-wrap">
+                        <button type="button" id="mnemoCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <div id="flashcardMnemoForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardMnemoTitle">
+                        <h3 id="flashcardMnemoTitle">Mnemo-Karteikarte</h3>
+                        <div class="flashcard-form-error" role="alert" hidden></div>
+                        <div>
+                            <label for="mnemoTitel">Titel</label>
+                            <input type="text" id="mnemoTitel" placeholder="Titel eingeben…" maxlength="60">
+                        </div>
+                        <div id="mnemoKeysContainer">
+                            <div class="flashcard-entry-block" data-entry-type="mnemo">
+                                <div class="flashcard-entry-header">
+                                    <label for="mnemoSchluessel1">Schlüssel 1</label>
+                                    <button type="button" class="flashcard-entry-remove" title="Schlüssel entfernen" aria-label="Schlüssel 1 entfernen">×</button>
+                                </div>
+                                <input type="text" id="mnemoSchluessel1" data-field="schluessel" placeholder="z.B. Re" maxlength="500">
+                                <input type="text" id="mnemoSchluessel1Detail" data-field="inhalt" placeholder="Reich" maxlength="500" aria-label="Schlüssel 1 Detail">
+                            </div>
+                        </div>
+                        <button type="button" id="mnemoAddKeyBtn" class="prozess-add-step-btn">Schlüssel hinzufügen</button>
+                        <div class="flashcard-type-form-actions">
+                            <button type="button" id="mnemoSubmitBtn">Hinzufügen</button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-type-form-wrap">
+                        <button type="button" id="oklusionCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <div id="flashcardOklusionForm" class="flashcard-type-form flashcard-type-form--oklusion" role="dialog" aria-modal="true" aria-labelledby="flashcardOklusionTitle">
+                        <h3 id="flashcardOklusionTitle">Oklusion-Karteikarte</h3>
+                        <div class="flashcard-form-error" role="alert" hidden></div>
+                        <div>
+                            <label for="oklusionTitel">Titel</label>
+                            <input type="text" id="oklusionTitel" placeholder="Titel eingeben…" maxlength="255">
+                        </div>
+                        <div id="oklusionEditorHost"></div>
+                        <div class="flashcard-type-form-actions">
+                            <button type="button" id="oklusionSubmitBtn">Hinzufügen</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+    <script type="module">
+        import { OTTO_FACE_SVG } from './js/otto-face.js';
+        import { applyVoteUI, castVote, voterKeyQuery } from './js/votes.js';
+        import { UPVOTE_ICON_SVG, DOWNVOTE_ICON_SVG, COMMENT_ICON_SVG, DELETE_ICON_SVG } from './js/vote-icons.js';
+        import { applyCommentCount, openCommentsPanel } from './js/comments.js';
+        import { postChangeSuggestion } from './js/change-suggestions.js';
+        import { progressFromEntity, renderMiniBars } from './js/progress-bars.js';
+        import { typeIcon } from './js/type-icons.js';
+        import { renderMarkdown } from './js/markdown.js';
+        import { enhanceField, getFieldValue, fieldHasContent, resetField, parseFieldValue } from './js/rich-field.js';
+        import { mountOklusionEditor, mountOklusionViewer } from './js/oklusion.js';
+
         const API_BASE = 'http://127.0.0.1:3000';
+
+        document.querySelector('.upvote-icon')?.insertAdjacentHTML('beforeend', UPVOTE_ICON_SVG);
+        document.querySelector('.downvote-icon')?.insertAdjacentHTML('beforeend', DOWNVOTE_ICON_SVG);
+        document.querySelector('.comment-icon')?.insertAdjacentHTML('beforeend', COMMENT_ICON_SVG);
+        document.querySelector('.delete-icon')?.insertAdjacentHTML('beforeend', DELETE_ICON_SVG);
         let currentFlashcards = [];
         let currentCardIndex = 0;
         let isShowingAnswer = false;
         let prozessStepIndex = 0;
         let mnemoRevealedIndices = new Set();
+        let oklusionViewer = null;
         let currentTopicId = null;
-        let currentProgram = null;
-        let currentCourse = null;
         let currentTopic = null;
         let addFlashcardSetupDone = false;
+        let openSuggestionFormFn = null;
 
         function getTopicIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('topic');
-        }
-
-        function getProgramLabel(program) {
-            return program.abschluss ? `${program.abschluss} ${program.studiengang}` : program.studiengang;
         }
 
         function escapeHtml(text) {
@@ -137,25 +211,32 @@
             return div.innerHTML;
         }
 
-        function createBreadcrumb(program, course, topic) {
-            const breadcrumb = document.getElementById('breadcrumb');
-            const programLabel = getProgramLabel(program);
-            breadcrumb.innerHTML = `
-                <span class="breadcrumb-item">
-                    <a href="index.html" class="breadcrumb-link">${escapeHtml(programLabel)}</a>
-                </span>
-                <span class="breadcrumb-separator">></span>
-                <span class="breadcrumb-item">
-                    <a href="layer2.html?program=${encodeURIComponent(course.studiengang_id)}" class="breadcrumb-link">${escapeHtml(course.name)}</a>
-                </span>
-                <span class="breadcrumb-separator">></span>
-                <span class="breadcrumb-item">
-                    <a href="layer3.html?course=${encodeURIComponent(course.id)}" class="breadcrumb-link">${escapeHtml(topic.name)}</a>
-                </span>
-                <span class="breadcrumb-separator">></span>
-                <span class="breadcrumb-item breadcrumb-current">Karten</span>
-            `;
-        }
+        function createBreadcrumb(currentLevel, studiengangId = null, courseId = null) {
+            const breadcrumbContainer = document.getElementById('breadcrumb');
+            
+            const layers = [
+                { id: 'index', title: 'Ebene 1', href: 'index.html' },
+                { id: 'layer2', title: 'Ebene 2', href: `layer2.html?program=${studiengangId}` },
+                { id: 'layer3', title: 'Ebene 3', href: `layer3.html?course=${courseId}` },
+                { id: 'layer4', title: 'Ebene 4', href: 'layer4.html' }
+            ];
+
+            const faceSvg = OTTO_FACE_SVG;
+
+            let htmlOutput = '';
+
+            for (let i = 0; i < currentLevel - 1; i++) {
+                const layer = layers[i];
+
+                htmlOutput += `
+                    <a href="${layer.href}" class="breadcrumb-step breadcrumb-step--${layer.id}" title="${layer.title}">
+                        ${faceSvg}
+                    </a>
+                `;
+            }
+
+            breadcrumbContainer.innerHTML = htmlOutput;
+}
 
         async function loadFlashcards() {
             const topicId = getTopicIdFromUrl();
@@ -171,24 +252,24 @@
                 currentTopic = topic;
                 const [courseRes, cardsRes] = await Promise.all([
                     fetch(`${API_BASE}/api/courses/${topic.kurs_id}`),
-                    fetch(`${API_BASE}/api/topics/${topicId}/flashcards`)
+                    fetch(`${API_BASE}/api/topics/${topicId}/flashcards?${voterKeyQuery()}`)
                 ]);
+                if (!courseRes.ok) throw new Error('Course not found');
                 const course = await courseRes.json();
-                currentCourse = course;
-                const programRes = await fetch(`${API_BASE}/api/programs/${course.studiengang_id}`);
-                const program = await programRes.json();
-                currentProgram = program;
-                createBreadcrumb(program, course, topic);
+                createBreadcrumb(4, course.studiengang_id, course.id);
                 const cards = await cardsRes.json();
                 currentFlashcards = cards.filter(c =>
-                    (c.typ === 'Mnemo' && c.question != null) || (c.typ === 'Prozess' && c.question != null) || (c.question != null && c.answer != null)
+                    (c.typ === 'Mnemo' && c.question != null) ||
+                    (c.typ === 'Prozess' && c.question != null) ||
+                    (c.typ === 'Oklusion' && c.image && c.occlusions?.length > 0) ||
+                    (c.question != null && c.answer != null)
                 );
                 currentCardIndex = 0;
                 isShowingAnswer = false;
                 prozessStepIndex = 0;
                 mnemoRevealedIndices.clear();
+                oklusionViewer?.resetRevealed();
                 displayCurrentCard();
-                updateCardCounter();
                 if (!addFlashcardSetupDone) {
                     setupAddFlashcard();
                     addFlashcardSetupDone = true;
@@ -202,49 +283,67 @@
             const titel = card.question || '';
             const steps = card.steps || [];
             const n = steps.length;
-            let html = '<div class="prozess-header">';
-            html += '<span class="prozess-label">Prozess:</span>';
-            html += '<span class="prozess-title">' + escapeHtml(titel) + '</span>';
-            html += '</div>';
             if (n === 0) {
-                html += '<p>' + escapeHtml(titel) + '</p>';
-            } else {
-                for (let i = 0; i < n; i++) {
-                    if (i <= stepIndex) {
-                        html += '<div class="prozess-step-block prozess-question">';
-                        html += '<span class="prozess-step-num">' + (i + 1) + '.</span>';
-                        html += '<p>' + escapeHtml(steps[i].frage) + '</p></div>';
-                    }
-                    if (i < stepIndex) {
-                        html += '<div class="prozess-step-block prozess-answer"><p>' + escapeHtml(steps[i].antwort) + '</p></div>';
-                    }
-                }
+                return '<div class="prozess-timeline"><div class="prozess-header"><span class="prozess-title">' + escapeHtml(titel) + '</span></div></div>';
             }
+            let html = '<div class="prozess-timeline">';
+            html += '<div class="prozess-step-max" aria-label="Maximale Schrittanzahl: ' + n + '">';
+            html += '<span class="prozess-step-max-num">' + n + '</span>';
+            html += '<span class="prozess-step-max-label">Schritte</span></div>';
+            html += '<div class="prozess-header"><span class="prozess-title">' + escapeHtml(titel) + '</span></div>';
+            html += '<div class="prozess-steps">';
+            for (let i = 0; i < n; i++) {
+                if (i > stepIndex) break;
+                const state = i < stepIndex ? 'is-done' : (i === stepIndex ? 'is-current' : '');
+                html += '<div class="prozess-step ' + state + '">';
+                html += '<div class="prozess-rail"><span class="prozess-dot"></span></div>';
+                html += '<div class="prozess-body">';
+                html += '<div class="prozess-q">';
+                html += '<span class="prozess-q-num">' + (i + 1) + '.</span>';
+                html += '<div class="prozess-q-text">' + renderMarkdown(steps[i].frage) + '</div>';
+                html += '</div>';
+                if (i < stepIndex) {
+                    html += '<div class="prozess-a">' + renderMarkdown(steps[i].antwort) + '</div>';
+                }
+                html += '</div></div>';
+            }
+            html += '</div></div>';
             return html;
         }
 
         function renderMnemoHtml(card) {
             const keys = card.keys || [];
             const n = keys.length;
-            let html = '<div class="mnemo-header">';
-            html += '<span class="mnemo-label">Mnemo:</span>';
-            html += '<span class="mnemo-title">' + escapeHtml(card.question || '') + '</span>';
-            html += '</div>';
+            const allRevealed = mnemoRevealedIndices.size === n;
+            let html = '<div class="mnemo-chips">';
+            html += '<div class="mnemo-header"><span class="mnemo-title">' + escapeHtml(card.question || '') + '</span></div>';
             html += '<div class="mnemo-keys-row">';
             for (let i = 0; i < n; i++) {
                 const revealedClass = 'mnemo-key-btn' + (mnemoRevealedIndices.has(i) ? ' revealed' : '');
                 html += '<button type="button" class="' + revealedClass + '" data-key-index="' + i + '">' + escapeHtml(keys[i].schluessel) + '</button>';
             }
-            const allRevealed = mnemoRevealedIndices.size === n;
-            html += '<button type="button" class="mnemo-reveal-all-btn">' + (allRevealed ? 'Alle verstecken' : 'Alle aufdecken') + '</button>';
             html += '</div>';
+            html += '<div class="mnemo-toolbar"><button type="button" class="mnemo-reveal-all-btn">' + (allRevealed ? 'Alle verstecken' : 'Alle aufdecken') + '</button></div>';
             html += '<div class="mnemo-inhalte">';
             const sortedRevealed = Array.from(mnemoRevealedIndices).sort((a, b) => a - b);
             for (const i of sortedRevealed) {
-                html += '<div class="mnemo-inhalt-block">' + escapeHtml(keys[i].inhalt) + '</div>';
+                html += '<div class="mnemo-inhalt-block"><span class="mnemo-inhalt-key">' + escapeHtml(keys[i].schluessel) + ' →</span>';
+                html += escapeHtml(keys[i].inhalt) + '</div>';
             }
-            html += '</div>';
+            html += '</div></div>';
             return html;
+        }
+
+        function renderStandardHtml(card) {
+            const q = renderMarkdown(card.question);
+            const a = renderMarkdown(card.answer);
+            return `
+                <div class="standard-indicator" aria-hidden="true">
+                    <span class="standard-dot standard-dot--q"></span>
+                    <span class="standard-dot standard-dot--a"></span>
+                </div>
+                <div class="standard-side standard-side--question"><div class="standard-side-text" lang="de">${q}</div></div>
+                <div class="standard-side standard-side--answer"><div class="standard-side-text" lang="de">${a}</div></div>`;
         }
 
         function attachMnemoHandlers(card) {
@@ -282,56 +381,67 @@
             const flashcardContent = document.getElementById('flashcard-content');
             const flashcard = document.getElementById('flashcard');
             const ratingRow = document.getElementById('spaced-rep-buttons');
+            const deleteBtn = document.querySelector('.delete-icon');
             if (currentFlashcards.length === 0) {
                 flashcardContent.innerHTML = '<p>Noch keine Karten. Nutze + um eine Karteikarte hinzuzufügen.</p>';
-                flashcard.classList.remove('showing-answer', 'prozess-flashcard', 'mnemo-flashcard');
+                flashcard.classList.remove('showing-answer', 'prozess-flashcard', 'mnemo-flashcard', 'standard-flashcard', 'oklusion-flashcard');
+                oklusionViewer?.destroy();
+                oklusionViewer = null;
                 if (ratingRow) ratingRow.style.visibility = 'hidden';
+                if (deleteBtn) deleteBtn.style.visibility = 'hidden';
+                renderMiniBars(
+                    document.querySelector('.sr-progress-bars'),
+                    progressFromEntity(currentTopic)
+                );
                 return;
             }
             if (ratingRow) ratingRow.style.visibility = '';
+            if (deleteBtn) deleteBtn.style.visibility = '';
             if (currentCardIndex >= currentFlashcards.length) {
                 currentCardIndex = 0;
             }
             const currentCard = currentFlashcards[currentCardIndex];
             const isProzess = currentCard.typ === 'Prozess' && currentCard.steps && currentCard.steps.length > 0;
             const isMnemo = currentCard.typ === 'Mnemo' && currentCard.keys && currentCard.keys.length > 0;
+            const isOklusion = currentCard.typ === 'Oklusion' && currentCard.image && currentCard.occlusions?.length > 0;
+            oklusionViewer?.destroy();
+            oklusionViewer = null;
             if (isProzess) {
                 flashcard.classList.add('prozess-flashcard');
-                flashcard.classList.remove('mnemo-flashcard', 'showing-answer');
+                flashcard.classList.remove('mnemo-flashcard', 'showing-answer', 'standard-flashcard', 'oklusion-flashcard');
                 flashcardContent.innerHTML = renderProzessHtml(currentCard, prozessStepIndex);
             } else if (isMnemo) {
                 flashcard.classList.add('mnemo-flashcard');
-                flashcard.classList.remove('prozess-flashcard', 'showing-answer');
+                flashcard.classList.remove('prozess-flashcard', 'showing-answer', 'standard-flashcard', 'oklusion-flashcard');
                 flashcardContent.innerHTML = renderMnemoHtml(currentCard);
                 attachMnemoHandlers(currentCard);
+            } else if (isOklusion) {
+                flashcard.classList.add('oklusion-flashcard');
+                flashcard.classList.remove('prozess-flashcard', 'mnemo-flashcard', 'showing-answer', 'standard-flashcard');
+                flashcardContent.innerHTML = '';
+                oklusionViewer = mountOklusionViewer(flashcardContent, currentCard);
             } else {
-                flashcard.classList.remove('prozess-flashcard', 'mnemo-flashcard');
-                if (isShowingAnswer) {
-                    flashcardContent.innerHTML = `
-                        <div class="flashcard-question">
-                            <p>${escapeHtml(currentCard.question)}</p>
-                        </div>
-                        <div class="flashcard-answer">
-                            <p>${escapeHtml(currentCard.answer)}</p>
-                        </div>
-                    `;
-                    flashcard.classList.add('showing-answer');
-                } else {
-                    flashcardContent.innerHTML = `
-                        <div class="flashcard-question">
-                            <p>${escapeHtml(currentCard.question)}</p>
-                        </div>
-                    `;
-                    flashcard.classList.remove('showing-answer');
-                }
+                flashcard.classList.remove('prozess-flashcard', 'mnemo-flashcard', 'oklusion-flashcard');
+                flashcard.classList.add('standard-flashcard');
+                flashcardContent.innerHTML = renderStandardHtml(currentCard);
+                flashcard.classList.toggle('showing-answer', isShowingAnswer);
             }
+            updateFlashcardVoteUI();
         }
 
-        // Update card counter
-        function updateCardCounter() {
-            const counter = document.getElementById('card-counter');
-            const total = currentFlashcards.length;
-            counter.textContent = total === 0 ? '0 / 0' : `${currentCardIndex + 1} / ${total}`;
+        function updateFlashcardVoteUI() {
+            const card = currentFlashcards[currentCardIndex];
+            if (!card) return;
+            applyVoteUI(document.querySelector('.sticker-bar'), {
+                upvotes: card.upvotes ?? 0,
+                downvotes: card.downvotes ?? 0,
+                user_vote: card.user_vote ?? null
+            });
+            applyCommentCount(document.querySelector('.sticker-bar'), card.comment_count ?? 0);
+            renderMiniBars(
+                document.querySelector('.sr-progress-bars'),
+                progressFromEntity(currentTopic)
+            );
         }
 
         // Toggle: for Prozess cards advance step; for Standard toggle question/answer; Mnemo uses key buttons only
@@ -339,6 +449,8 @@
             const currentCard = currentFlashcards[currentCardIndex];
             const isMnemo = currentCard && currentCard.typ === 'Mnemo' && currentCard.keys && currentCard.keys.length > 0;
             if (isMnemo) return;
+            const isOklusion = currentCard && currentCard.typ === 'Oklusion' && currentCard.image && currentCard.occlusions?.length > 0;
+            if (isOklusion) return;
             const isProzess = currentCard && currentCard.typ === 'Prozess' && currentCard.steps && currentCard.steps.length > 0;
             if (isProzess) {
                 const n = currentCard.steps.length;
@@ -347,7 +459,28 @@
                 displayCurrentCard();
             } else {
                 isShowingAnswer = !isShowingAnswer;
+                document.getElementById('flashcard').classList.toggle('showing-answer', isShowingAnswer);
+            }
+        }
+
+        async function deleteCurrentFlashcard() {
+            const card = currentFlashcards[currentCardIndex];
+            if (!card) return;
+            if (!confirm('Karteikarte wirklich löschen?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/api/flashcards/${card.id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error();
+                currentFlashcards.splice(currentCardIndex, 1);
+                if (currentCardIndex >= currentFlashcards.length && currentCardIndex > 0) {
+                    currentCardIndex = currentFlashcards.length - 1;
+                }
+                prozessStepIndex = 0;
+                mnemoRevealedIndices.clear();
+                oklusionViewer?.resetRevealed();
+                isShowingAnswer = false;
                 displayCurrentCard();
+            } catch (e) {
+                // ignore
             }
         }
 
@@ -356,19 +489,92 @@
             if (currentFlashcards.length === 0) return;
             prozessStepIndex = 0;
             mnemoRevealedIndices.clear();
+            oklusionViewer?.resetRevealed();
             currentCardIndex = (currentCardIndex + 1) % currentFlashcards.length;
             isShowingAnswer = false;
             displayCurrentCard();
-            updateCardCounter();
         }
 
         // Setup event listeners
         function setupEventListeners() {
             const flashcard = document.getElementById('flashcard');
+            const deleteBtn = document.querySelector('.delete-icon');
+            const commentBtn = document.querySelector('.comment-icon');
             const ratingButtons = document.querySelectorAll('.spaced-rep-buttons button');
 
             // Click on flashcard to toggle question/answer
-            flashcard.addEventListener('click', toggleFlashcard);
+            flashcard.addEventListener('click', (e) => {
+                if (e.target.closest('.sticker-bar')) return;
+                if (e.target.closest('.okl-occ')) return;
+                toggleFlashcard();
+            });
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteCurrentFlashcard();
+                });
+            }
+
+            document.querySelector('.upvote-icon')?.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const card = currentFlashcards[currentCardIndex];
+                if (!card) return;
+                const voteContainer = document.querySelector('.sticker-bar');
+                const data = await castVote(API_BASE, 'karteikarte', card.id, 'up', voteContainer);
+                if (data) {
+                    card.upvotes = data.upvotes;
+                    card.downvotes = data.downvotes;
+                    card.user_vote = data.user_vote;
+                }
+            });
+
+            document.querySelector('.downvote-icon')?.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const card = currentFlashcards[currentCardIndex];
+                if (!card) return;
+                const voteContainer = document.querySelector('.sticker-bar');
+                const data = await castVote(API_BASE, 'karteikarte', card.id, 'down', voteContainer);
+                if (data) {
+                    card.upvotes = data.upvotes;
+                    card.downvotes = data.downvotes;
+                    card.user_vote = data.user_vote;
+                }
+            });
+
+            if (commentBtn) {
+                commentBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const card = currentFlashcards[currentCardIndex];
+                    if (!card) return;
+                    openCommentsPanel(API_BASE, 'karteikarte', card.id, {
+                        title: card.question || 'Karteikarte',
+                        changeMode: 'flashcard',
+                        onChangeRequest: ({ authorName, addSuggestion }) => {
+                            if (openSuggestionFormFn) {
+                                openSuggestionFormFn(card, authorName, addSuggestion);
+                            }
+                        },
+                        onCardApplied: (updatedCard) => {
+                            const idx = currentFlashcards.findIndex((c) => c.id === updatedCard.id);
+                            if (idx >= 0) {
+                                currentFlashcards[idx] = { ...currentFlashcards[idx], ...updatedCard };
+                                if (idx === currentCardIndex) {
+                                    prozessStepIndex = 0;
+                                    mnemoRevealedIndices.clear();
+                                    oklusionViewer?.resetRevealed();
+                                    isShowingAnswer = false;
+                                    displayCurrentCard();
+                                }
+                            }
+                        },
+                        onCountChange: (count) => {
+                            card.comment_count = count;
+                            applyCommentCount(document.querySelector('.sticker-bar'), count);
+                        }
+                    });
+                });
+            }
 
             // Rating buttons 1–5: advance to next card only
             ratingButtons.forEach(btn => {
@@ -379,8 +585,76 @@
             });
         }
 
+        function showFormError(formEl, message) {
+            if (!formEl) return;
+            const errEl = formEl.querySelector('.flashcard-form-error');
+            if (!errEl) return;
+            errEl.textContent = message;
+            errEl.hidden = false;
+        }
+
+        function hideFormError(formEl) {
+            if (!formEl) return;
+            const errEl = formEl.querySelector('.flashcard-form-error');
+            if (!errEl) return;
+            errEl.textContent = '';
+            errEl.hidden = true;
+        }
+
+        function mapFlashcardError(data, status) {
+            if (data && data.message) return data.message;
+            if (data && data.error === 'duplicate_mnemo_key') {
+                return 'Jeder Schlüssel darf nur einmal vorkommen. Bitte kürzere oder unterschiedliche Schlüssel verwenden.';
+            }
+            if (status === 400 && data && data.error) {
+                const apiErrors = {
+                    'topic_id required': 'Bitte zuerst ein Thema auswählen.',
+                    'question and answer required for Standard cards': 'Bitte Frage und Antwort ausfüllen.',
+                    'titel required for Prozess cards': 'Bitte einen Titel eingeben.',
+                    'steps array required with at least one step (frage, antwort)': 'Bitte mindestens einen Prozessschritt ausfüllen.',
+                    'title required for Mnemo cards': 'Bitte einen Titel eingeben.',
+                    'title required for Oklusion cards': 'Bitte einen Titel eingeben.',
+                    'keys array required with at least one item (schluessel, inhalt)': 'Bitte mindestens einen Schlüssel mit Inhalt ausfüllen.',
+                    'image required for Oklusion cards': 'Bitte ein Bild hochladen.',
+                    'image_too_large': 'Bild ist zu groß (max. 2 MB).',
+                    'occlusions array required with at least one occlusion': 'Bitte mindestens eine Abdeckung hinzufügen.',
+                    'invalid occlusion type': 'Ungültiger Abdeckungstyp.',
+                    'invalid occlusion bounds': 'Ungültige Abdeckungsposition.',
+                    'lasso occlusions require at least 3 points': 'Freihand-Flächen benötigen mindestens 3 Punkte.'
+                };
+                if (data.error === 'image_too_large') return apiErrors.image_too_large;
+                return apiErrors[data.error] || data.error;
+            }
+            return 'Die Karte konnte nicht gespeichert werden. Bitte Eingaben prüfen und erneut versuchen.';
+        }
+
+        async function postFlashcard(payload) {
+            const res = await fetch(`${API_BASE}/api/flashcards`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            let data = {};
+            try {
+                data = await res.json();
+            } catch (_) {}
+            return { ok: res.ok, status: res.status, data };
+        }
+
+        function hasDuplicateMnemoKeys(keys) {
+            const seen = new Set();
+            for (const k of keys) {
+                const s = (k.schluessel || '').toLowerCase();
+                if (!s) continue;
+                if (seen.has(s)) return true;
+                seen.add(s);
+            }
+            return false;
+        }
+
         function setupAddFlashcard() {
             const addBtn = document.getElementById('addFlashcardBtn');
+            const modal = document.getElementById('flashcardStyleModal');
             const form = document.getElementById('flashcardStyleForm');
             const cancelBtn = document.getElementById('cancelFlashcardBtn');
             const styleOptions = form.querySelectorAll('.flashcard-style-option');
@@ -401,10 +675,17 @@
             const mnemoAddKeyBtn = document.getElementById('mnemoAddKeyBtn');
             const mnemoCancelBtn = document.getElementById('mnemoCancelBtn');
             const mnemoSubmitBtn = document.getElementById('mnemoSubmitBtn');
-            const flashcardContainer = document.querySelector('.flashcard-container');
-            if (!addBtn || !form) return;
-            let prozessStepCount = 2;
-            let mnemoKeyCount = 2;
+            const oklusionForm = document.getElementById('flashcardOklusionForm');
+            const oklusionTitel = document.getElementById('oklusionTitel');
+            const oklusionEditorHost = document.getElementById('oklusionEditorHost');
+            const oklusionCancelBtn = document.getElementById('oklusionCancelBtn');
+            const oklusionSubmitBtn = document.getElementById('oklusionSubmitBtn');
+            const typeModal = document.getElementById('flashcardTypeModal');
+            const typeForms = [standardForm, prozessForm, mnemoForm, oklusionForm].filter(Boolean);
+            if (!addBtn || !modal || !form || !typeModal) return;
+            let oklusionEditor = null;
+            let formMode = 'create';
+            let suggestionContext = null;
             const mnemoPlaceholders = [
                 { key: 'z.B. Re', detail: 'Reich' },
                 { key: 'z.B. St', detail: 'Stamm' },
@@ -415,53 +696,441 @@
                 { key: 'z.B. Sp', detail: 'Spezies' }
             ];
 
-            function showCardArea() {
-                if (flashcardContainer) flashcardContainer.classList.remove('is-hidden');
-                addBtn.classList.remove('is-hidden');
-            }
-            function hideCardArea() {
-                if (flashcardContainer) flashcardContainer.classList.add('is-hidden');
+            function resetFormMode() {
+                formMode = 'create';
+                suggestionContext = null;
+                if (standardSubmitBtn) standardSubmitBtn.textContent = 'Hinzufügen';
+                if (prozessSubmitBtn) prozessSubmitBtn.textContent = 'Hinzufügen';
+                if (mnemoSubmitBtn) mnemoSubmitBtn.textContent = 'Hinzufügen';
+                if (oklusionSubmitBtn) oklusionSubmitBtn.textContent = 'Hinzufügen';
             }
 
-            function closeStyleForm() {
-                form.classList.remove('is-open');
-                showCardArea();
+            function setSuggestSubmitLabels() {
+                if (standardSubmitBtn) standardSubmitBtn.textContent = 'Vorschlag senden';
+                if (prozessSubmitBtn) prozessSubmitBtn.textContent = 'Vorschlag senden';
+                if (mnemoSubmitBtn) mnemoSubmitBtn.textContent = 'Vorschlag senden';
+                if (oklusionSubmitBtn) oklusionSubmitBtn.textContent = 'Vorschlag senden';
             }
-            function closeStyleFormKeepHidden() {
-                form.classList.remove('is-open');
+
+            async function submitSuggestionPayload(payload, closeFn, activeForm) {
+                const onSubmitted = suggestionContext?.onSubmitted;
+                try {
+                    const suggestion = await postChangeSuggestion(
+                        API_BASE,
+                        'karteikarte',
+                        suggestionContext.cardId,
+                        suggestionContext.authorName,
+                        payload
+                    );
+                    onSubmitted?.(suggestion);
+                    closeFn();
+                } catch (e) {
+                    showFormError(activeForm, 'Der Vorschlag konnte nicht gespeichert werden. Bitte später erneut versuchen.');
+                }
+            }
+
+            function getProzessBlockFields(block) {
+                return {
+                    frage: block.querySelector('[data-field="frage"]'),
+                    antwort: block.querySelector('[data-field="antwort"]')
+                };
+            }
+
+            function getMnemoBlockFields(block) {
+                return {
+                    schluessel: block.querySelector('[data-field="schluessel"]'),
+                    inhalt: block.querySelector('[data-field="inhalt"]')
+                };
+            }
+
+            function updateProzessRemoveButtons() {
+                if (!prozessStepsContainer) return;
+                const blocks = prozessStepsContainer.querySelectorAll('.flashcard-entry-block');
+                const single = blocks.length <= 1;
+                blocks.forEach((block) => {
+                    const btn = block.querySelector('.flashcard-entry-remove');
+                    if (btn) {
+                        btn.disabled = single;
+                        btn.hidden = single;
+                    }
+                });
+            }
+
+            function updateMnemoRemoveButtons() {
+                if (!mnemoKeysContainer) return;
+                const blocks = mnemoKeysContainer.querySelectorAll('.flashcard-entry-block');
+                const single = blocks.length <= 1;
+                blocks.forEach((block) => {
+                    const btn = block.querySelector('.flashcard-entry-remove');
+                    if (btn) {
+                        btn.disabled = single;
+                        btn.hidden = single;
+                    }
+                });
+            }
+
+            function renumberProzessSteps() {
+                if (!prozessStepsContainer) return;
+                prozessStepsContainer.querySelectorAll('.flashcard-entry-block').forEach((block, i) => {
+                    const num = i + 1;
+                    const label = block.querySelector('.flashcard-entry-header label');
+                    const removeBtn = block.querySelector('.flashcard-entry-remove');
+                    const { frage, antwort } = getProzessBlockFields(block);
+                    if (label) {
+                        label.textContent = `Schritt ${num}`;
+                        if (frage) label.htmlFor = frage.id = `prozessSchritt${num}`;
+                    }
+                    if (antwort) {
+                        antwort.id = `prozessSchritt${num}Detail`;
+                        antwort.setAttribute('aria-label', `Schritt ${num} Detail`);
+                    }
+                    if (removeBtn) removeBtn.setAttribute('aria-label', `Schritt ${num} entfernen`);
+                });
+            }
+
+            function renumberMnemoKeys() {
+                if (!mnemoKeysContainer) return;
+                mnemoKeysContainer.querySelectorAll('.flashcard-entry-block').forEach((block, i) => {
+                    const num = i + 1;
+                    const label = block.querySelector('.flashcard-entry-header label');
+                    const removeBtn = block.querySelector('.flashcard-entry-remove');
+                    const { schluessel, inhalt } = getMnemoBlockFields(block);
+                    if (label) {
+                        label.textContent = `Schlüssel ${num}`;
+                        if (schluessel) label.htmlFor = schluessel.id = `mnemoSchluessel${num}`;
+                    }
+                    if (inhalt) {
+                        inhalt.id = `mnemoSchluessel${num}Detail`;
+                        inhalt.setAttribute('aria-label', `Schlüssel ${num} Detail`);
+                    }
+                    if (removeBtn) removeBtn.setAttribute('aria-label', `Schlüssel ${num} entfernen`);
+                });
+            }
+
+            function createProzessStepBlock(stepNum) {
+                const block = document.createElement('div');
+                block.className = 'flashcard-entry-block';
+                block.dataset.entryType = 'prozess';
+
+                const header = document.createElement('div');
+                header.className = 'flashcard-entry-header';
+
+                const label = document.createElement('label');
+                label.htmlFor = `prozessSchritt${stepNum}`;
+                label.textContent = `Schritt ${stepNum}`;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'flashcard-entry-remove';
+                removeBtn.title = 'Schritt entfernen';
+                removeBtn.setAttribute('aria-label', `Schritt ${stepNum} entfernen`);
+                removeBtn.textContent = '×';
+                removeBtn.onclick = () => removeProzessStepBlock(block);
+
+                header.appendChild(label);
+                header.appendChild(removeBtn);
+
+                const frage = document.createElement('textarea');
+                frage.id = `prozessSchritt${stepNum}`;
+                frage.dataset.field = 'frage';
+                frage.placeholder = '…';
+                frage.rows = 3;
+
+                const antwort = document.createElement('textarea');
+                antwort.id = `prozessSchritt${stepNum}Detail`;
+                antwort.dataset.field = 'antwort';
+                antwort.placeholder = '…';
+                antwort.rows = 3;
+                antwort.setAttribute('aria-label', `Schritt ${stepNum} Detail`);
+
+                block.appendChild(header);
+                block.appendChild(frage);
+                block.appendChild(antwort);
+                prozessStepsContainer.appendChild(block);
+                enhanceField(frage);
+                enhanceField(antwort);
+                updateProzessRemoveButtons();
+                return block;
+            }
+
+            function removeProzessStepBlock(block) {
+                if (!prozessStepsContainer) return;
+                if (prozessStepsContainer.querySelectorAll('.flashcard-entry-block').length <= 1) return;
+                block.remove();
+                renumberProzessSteps();
+                updateProzessRemoveButtons();
+            }
+
+            function resetProzessSteps() {
+                if (!prozessStepsContainer) return;
+                prozessStepsContainer.innerHTML = '';
+                createProzessStepBlock(1);
+            }
+
+            function collectProzessStepsFromDom() {
+                if (!prozessStepsContainer) return [];
+                return Array.from(prozessStepsContainer.querySelectorAll('.flashcard-entry-block')).map((block) => {
+                    const { frage, antwort } = getProzessBlockFields(block);
+                    return {
+                        frage: frage ? getFieldValue(frage) : '',
+                        antwort: antwort ? getFieldValue(antwort) : ''
+                    };
+                });
+            }
+
+            function createMnemoKeyBlock(keyNum, ph) {
+                const placeholders = ph || { key: '…', detail: '…' };
+                const block = document.createElement('div');
+                block.className = 'flashcard-entry-block';
+                block.dataset.entryType = 'mnemo';
+
+                const header = document.createElement('div');
+                header.className = 'flashcard-entry-header';
+
+                const label = document.createElement('label');
+                label.htmlFor = `mnemoSchluessel${keyNum}`;
+                label.textContent = `Schlüssel ${keyNum}`;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'flashcard-entry-remove';
+                removeBtn.title = 'Schlüssel entfernen';
+                removeBtn.setAttribute('aria-label', `Schlüssel ${keyNum} entfernen`);
+                removeBtn.textContent = '×';
+                removeBtn.onclick = () => removeMnemoKeyBlock(block);
+
+                header.appendChild(label);
+                header.appendChild(removeBtn);
+
+                const schluessel = document.createElement('input');
+                schluessel.type = 'text';
+                schluessel.id = `mnemoSchluessel${keyNum}`;
+                schluessel.dataset.field = 'schluessel';
+                schluessel.placeholder = placeholders.key;
+                schluessel.maxLength = 500;
+
+                const inhalt = document.createElement('input');
+                inhalt.type = 'text';
+                inhalt.id = `mnemoSchluessel${keyNum}Detail`;
+                inhalt.dataset.field = 'inhalt';
+                inhalt.placeholder = placeholders.detail;
+                inhalt.maxLength = 500;
+                inhalt.setAttribute('aria-label', `Schlüssel ${keyNum} Detail`);
+
+                block.appendChild(header);
+                block.appendChild(schluessel);
+                block.appendChild(inhalt);
+                mnemoKeysContainer.appendChild(block);
+                updateMnemoRemoveButtons();
+                return block;
+            }
+
+            function removeMnemoKeyBlock(block) {
+                if (!mnemoKeysContainer) return;
+                if (mnemoKeysContainer.querySelectorAll('.flashcard-entry-block').length <= 1) return;
+                block.remove();
+                renumberMnemoKeys();
+                updateMnemoRemoveButtons();
+            }
+
+            function resetMnemoKeys() {
+                if (!mnemoKeysContainer) return;
+                mnemoKeysContainer.innerHTML = '';
+                createMnemoKeyBlock(1, mnemoPlaceholders[0]);
+            }
+
+            function collectMnemoKeysFromDom() {
+                if (!mnemoKeysContainer) return [];
+                return Array.from(mnemoKeysContainer.querySelectorAll('.flashcard-entry-block')).map((block) => {
+                    const { schluessel, inhalt } = getMnemoBlockFields(block);
+                    return {
+                        schluessel: schluessel ? schluessel.value.trim() : '',
+                        inhalt: inhalt ? inhalt.value.trim() : ''
+                    };
+                });
+            }
+
+            function initProzessStepBlocks() {
+                if (!prozessStepsContainer) return;
+                prozessStepsContainer.querySelectorAll('.flashcard-entry-block').forEach((block) => {
+                    const btn = block.querySelector('.flashcard-entry-remove');
+                    if (btn) btn.onclick = () => removeProzessStepBlock(block);
+                    const { frage, antwort } = getProzessBlockFields(block);
+                    if (frage) enhanceField(frage);
+                    if (antwort) enhanceField(antwort);
+                });
+                updateProzessRemoveButtons();
+            }
+
+            function initMnemoKeyBlocks() {
+                if (!mnemoKeysContainer) return;
+                mnemoKeysContainer.querySelectorAll('.flashcard-entry-block').forEach((block) => {
+                    const btn = block.querySelector('.flashcard-entry-remove');
+                    if (btn) btn.onclick = () => removeMnemoKeyBlock(block);
+                });
+                updateMnemoRemoveButtons();
+            }
+
+            function addProzessStepField() {
+                const count = prozessStepsContainer.querySelectorAll('.flashcard-entry-block').length;
+                createProzessStepBlock(count + 1);
+            }
+
+            function addMnemoKeyField(keyNum, ph) {
+                createMnemoKeyBlock(keyNum, ph);
+            }
+
+            function prefillStandardForm(card) {
+                parseFieldValue(standardQuestion, card.question || '');
+                parseFieldValue(standardAnswer, card.answer || '');
+            }
+
+            function prefillProzessForm(card) {
+                if (prozessTitel) prozessTitel.value = card.question || '';
+                if (!prozessStepsContainer) return;
+                prozessStepsContainer.innerHTML = '';
+                const steps = card.steps || [];
+                if (steps.length === 0) {
+                    createProzessStepBlock(1);
+                    return;
+                }
+                steps.forEach((step, i) => {
+                    createProzessStepBlock(i + 1);
+                    const block = prozessStepsContainer.lastElementChild;
+                    const { frage, antwort } = getProzessBlockFields(block);
+                    if (frage) parseFieldValue(frage, step.frage || '');
+                    if (antwort) parseFieldValue(antwort, step.antwort || '');
+                });
+            }
+
+            function prefillMnemoForm(card) {
+                if (mnemoTitel) mnemoTitel.value = card.question || '';
+                if (!mnemoKeysContainer) return;
+                mnemoKeysContainer.innerHTML = '';
+                const keys = card.keys || [];
+                if (keys.length === 0) {
+                    createMnemoKeyBlock(1, mnemoPlaceholders[0]);
+                    return;
+                }
+                keys.forEach((key, i) => {
+                    createMnemoKeyBlock(i + 1, mnemoPlaceholders[i] || { key: '…', detail: '…' });
+                    const block = mnemoKeysContainer.lastElementChild;
+                    const { schluessel, inhalt } = getMnemoBlockFields(block);
+                    if (schluessel) schluessel.value = key.schluessel || '';
+                    if (inhalt) inhalt.value = key.inhalt || '';
+                });
+            }
+
+            function prefillOklusionForm(card) {
+                if (oklusionTitel) oklusionTitel.value = card.question && card.question !== 'Oklusion-Karte' ? card.question : '';
+                ensureOklusionEditor()?.loadData({
+                    image: card.image,
+                    occlusions: card.occlusions || []
+                });
+            }
+
+            function openSuggestionForm(card, authorName, onSubmitted) {
+                formMode = 'suggest';
+                suggestionContext = { cardId: card.id, authorName, onSubmitted };
+                setSuggestSubmitLabels();
+                const typ = card.typ;
+                if (typ === 'Standard') {
+                    hideFormError(standardForm);
+                    prefillStandardForm(card);
+                    openTypeForm(standardForm);
+                } else if (typ === 'Prozess') {
+                    hideFormError(prozessForm);
+                    prefillProzessForm(card);
+                    openTypeForm(prozessForm);
+                } else if (typ === 'Mnemo') {
+                    hideFormError(mnemoForm);
+                    prefillMnemoForm(card);
+                    openTypeForm(mnemoForm);
+                } else if (typ === 'Oklusion') {
+                    hideFormError(oklusionForm);
+                    prefillOklusionForm(card);
+                    openTypeForm(oklusionForm);
+                }
+            }
+
+            openSuggestionFormFn = openSuggestionForm;
+
+            enhanceField(standardQuestion);
+            enhanceField(standardAnswer);
+            initProzessStepBlocks();
+            initMnemoKeyBlocks();
+
+            function closeStyleForm() {
+                modal.classList.remove('is-open');
+                modal.setAttribute('aria-hidden', 'true');
             }
             function openForm() {
-                hideCardArea();
-                form.classList.add('is-open');
-                addBtn.classList.add('is-hidden');
+                ensureOverlayOnBody(modal);
+                modal.classList.add('is-open');
+                modal.setAttribute('aria-hidden', 'false');
+            }
+            function ensureOverlayOnBody(el) {
+                if (el && el.parentElement !== document.body) {
+                    document.body.appendChild(el);
+                }
+            }
+            function closeTypeModal() {
+                typeModal.classList.remove('is-open');
+                typeModal.setAttribute('aria-hidden', 'true');
+                typeForms.forEach((f) => f.classList.remove('is-open'));
+            }
+            function openTypeForm(activeForm) {
+                closeTypeModal();
+                ensureOverlayOnBody(typeModal);
+                activeForm.classList.add('is-open');
+                typeModal.classList.add('is-open');
+                typeModal.setAttribute('aria-hidden', 'false');
+            }
+            function getOpenTypeForm() {
+                return typeForms.find((f) => f.classList.contains('is-open'));
             }
             function closeStandardForm() {
-                standardForm.classList.remove('is-open');
-                standardQuestion.value = '';
-                standardAnswer.value = '';
-                showCardArea();
+                hideFormError(standardForm);
+                resetField(standardQuestion);
+                resetField(standardAnswer);
+                resetFormMode();
+                closeTypeModal();
             }
             function closeProzessForm() {
-                prozessForm.classList.remove('is-open');
+                hideFormError(prozessForm);
                 if (prozessTitel) prozessTitel.value = '';
-                const s1 = document.getElementById('prozessSchritt1');
-                const s1d = document.getElementById('prozessSchritt1Detail');
-                if (s1) s1.value = '';
-                if (s1d) s1d.value = '';
-                if (prozessStepsContainer) prozessStepsContainer.innerHTML = '';
-                prozessStepCount = 2;
-                showCardArea();
+                resetProzessSteps();
+                resetFormMode();
+                closeTypeModal();
             }
             function closeMnemoForm() {
-                if (mnemoForm) mnemoForm.classList.remove('is-open');
+                hideFormError(mnemoForm);
                 if (mnemoTitel) mnemoTitel.value = '';
-                const m1 = document.getElementById('mnemoSchluessel1');
-                const m1d = document.getElementById('mnemoSchluessel1Detail');
-                if (m1) m1.value = '';
-                if (m1d) m1d.value = '';
-                if (mnemoKeysContainer) mnemoKeysContainer.innerHTML = '';
-                mnemoKeyCount = 2;
-                showCardArea();
+                resetMnemoKeys();
+                resetFormMode();
+                closeTypeModal();
+            }
+            function ensureOklusionEditor() {
+                if (!oklusionEditor && oklusionEditorHost) {
+                    oklusionEditor = mountOklusionEditor(oklusionEditorHost, {
+                        onError: (msg) => showFormError(oklusionForm, msg)
+                    });
+                }
+                return oklusionEditor;
+            }
+            function closeOklusionForm() {
+                hideFormError(oklusionForm);
+                if (oklusionTitel) oklusionTitel.value = '';
+                oklusionEditor?.reset();
+                resetFormMode();
+                closeTypeModal();
+            }
+            function closeActiveTypeForm() {
+                const openForm = getOpenTypeForm();
+                if (openForm === standardForm) closeStandardForm();
+                else if (openForm === prozessForm) closeProzessForm();
+                else if (openForm === mnemoForm) closeMnemoForm();
+                else if (openForm === oklusionForm) closeOklusionForm();
             }
 
             addBtn.onclick = openForm;
@@ -469,160 +1138,211 @@
             styleOptions.forEach(btn => {
                 btn.onclick = () => {
                     const style = btn.dataset.style;
-                    closeStyleFormKeepHidden();
+                    closeStyleForm();
                     if (style === 'standard') {
-                        standardForm.classList.add('is-open');
+                        hideFormError(standardForm);
+                        openTypeForm(standardForm);
                     } else if (style === 'prozess') {
-                        prozessStepCount = 2;
-                        if (prozessStepsContainer) prozessStepsContainer.innerHTML = '';
-                        prozessForm.classList.add('is-open');
+                        hideFormError(prozessForm);
+                        resetProzessSteps();
+                        openTypeForm(prozessForm);
                     } else if (style === 'mnemo') {
-                        mnemoKeyCount = 2;
-                        if (mnemoKeysContainer) mnemoKeysContainer.innerHTML = '';
-                        if (mnemoForm) mnemoForm.classList.add('is-open');
-                    } else {
-                        showCardArea();
+                        hideFormError(mnemoForm);
+                        resetMnemoKeys();
+                        if (mnemoForm) openTypeForm(mnemoForm);
+                    } else if (style === 'oklusion') {
+                        hideFormError(oklusionForm);
+                        if (oklusionTitel) oklusionTitel.value = '';
+                        ensureOklusionEditor()?.reset();
+                        if (oklusionForm) openTypeForm(oklusionForm);
                     }
                 };
             });
             standardCancelBtn.onclick = closeStandardForm;
             standardSubmitBtn.onclick = async () => {
-                const question = standardQuestion.value.trim();
-                const answer = standardAnswer.value.trim();
-                if (!question || !answer || !currentTopicId) {
-                    closeStandardForm();
+                hideFormError(standardForm);
+                if (!fieldHasContent(standardQuestion) || !fieldHasContent(standardAnswer)) {
+                    showFormError(standardForm, 'Bitte Frage und Antwort ausfüllen.');
+                    return;
+                }
+                const question = getFieldValue(standardQuestion);
+                const answer = getFieldValue(standardAnswer);
+                if (formMode === 'suggest') {
+                    await submitSuggestionPayload({ style: 'standard', question, answer }, closeStandardForm, standardForm);
+                    return;
+                }
+                if (!currentTopicId) {
+                    showFormError(standardForm, 'Bitte zuerst ein Thema auswählen.');
                     return;
                 }
                 try {
-                    const res = await fetch(`${API_BASE}/api/flashcards`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ topic_id: currentTopicId, question, answer, style: 'standard' })
-                    });
-                    if (!res.ok) throw new Error();
+                    const result = await postFlashcard({ topic_id: currentTopicId, question, answer, style: 'standard' });
+                    if (!result.ok) {
+                        showFormError(standardForm, mapFlashcardError(result.data, result.status));
+                        return;
+                    }
                     closeStandardForm();
                     await loadFlashcards();
                 } catch (e) {
-                    closeStandardForm();
+                    showFormError(standardForm, 'Die Karte konnte nicht gespeichert werden. Bitte später erneut versuchen.');
                 }
             };
 
             if (prozessCancelBtn) prozessCancelBtn.onclick = closeProzessForm;
             if (prozessAddStepBtn) {
                 prozessAddStepBtn.onclick = () => {
-                    const n = prozessStepCount;
-                    const pair = document.createElement('div');
-                    pair.className = 'prozess-step-pair';
-                    pair.innerHTML = `
-                        <label for="prozessSchritt${n}">Schritt ${n}</label>
-                        <input type="text" id="prozessSchritt${n}" placeholder="…" maxlength="500">
-                    `;
-                    prozessStepsContainer.appendChild(pair);
-                    const detail = document.createElement('div');
-                    detail.innerHTML = `<input type="text" id="prozessSchritt${n}Detail" placeholder="…" maxlength="500" aria-label="Schritt ${n} Detail">`;
-                    prozessStepsContainer.appendChild(detail);
-                    prozessStepCount += 1;
+                    addProzessStepField();
                 };
             }
             if (prozessSubmitBtn) {
                 prozessSubmitBtn.onclick = async () => {
+                    hideFormError(prozessForm);
                     const titel = prozessTitel ? prozessTitel.value.trim() : '';
-                    if (!titel || !currentTopicId) {
-                        closeProzessForm();
+                    if (!titel) {
+                        showFormError(prozessForm, 'Bitte einen Titel eingeben.');
                         return;
                     }
-                    const steps = [];
-                    const s1 = document.getElementById('prozessSchritt1');
-                    const s1d = document.getElementById('prozessSchritt1Detail');
-                    if (s1 && s1d) {
-                        steps.push({ frage: s1.value.trim(), antwort: s1d.value.trim() });
-                    }
-                    for (let i = 2; i < prozessStepCount; i++) {
-                        const fn = document.getElementById(`prozessSchritt${i}`);
-                        const fd = document.getElementById(`prozessSchritt${i}Detail`);
-                        if (fn && fd) {
-                            steps.push({ frage: fn.value.trim(), antwort: fd.value.trim() });
-                        }
-                    }
+                    const steps = collectProzessStepsFromDom().filter((s) => s.frage || s.antwort);
                     if (steps.length === 0) {
-                        closeProzessForm();
+                        showFormError(prozessForm, 'Bitte mindestens einen Prozessschritt ausfüllen.');
+                        return;
+                    }
+                    if (formMode === 'suggest') {
+                        await submitSuggestionPayload({ style: 'prozess', titel, steps }, closeProzessForm, prozessForm);
+                        return;
+                    }
+                    if (!currentTopicId) {
+                        showFormError(prozessForm, 'Bitte zuerst ein Thema auswählen.');
                         return;
                     }
                     try {
-                        const res = await fetch(`${API_BASE}/api/flashcards`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ topic_id: currentTopicId, style: 'prozess', titel, steps })
-                        });
-                        if (!res.ok) throw new Error();
+                        const result = await postFlashcard({ topic_id: currentTopicId, style: 'prozess', titel, steps });
+                        if (!result.ok) {
+                            showFormError(prozessForm, mapFlashcardError(result.data, result.status));
+                            return;
+                        }
                         closeProzessForm();
                         await loadFlashcards();
                     } catch (e) {
-                        closeProzessForm();
+                        showFormError(prozessForm, 'Die Karte konnte nicht gespeichert werden. Bitte später erneut versuchen.');
                     }
                 };
             }
             if (mnemoCancelBtn) mnemoCancelBtn.onclick = closeMnemoForm;
             if (mnemoAddKeyBtn) {
                 mnemoAddKeyBtn.onclick = () => {
-                    const n = mnemoKeyCount;
-                    const ph = mnemoPlaceholders[n - 1] || { key: '…', detail: '…' };
-                    const pair = document.createElement('div');
-                    pair.className = 'prozess-step-pair';
-                    pair.innerHTML = `
-                        <label for="mnemoSchluessel${n}">Schlüssel ${n}</label>
-                        <input type="text" id="mnemoSchluessel${n}" placeholder="${ph.key.replace(/"/g, '&quot;')}" maxlength="500">
-                    `;
-                    mnemoKeysContainer.appendChild(pair);
-                    const detail = document.createElement('div');
-                    detail.innerHTML = `<input type="text" id="mnemoSchluessel${n}Detail" placeholder="${ph.detail.replace(/"/g, '&quot;')}" maxlength="500" aria-label="Schlüssel ${n} Detail">`;
-                    mnemoKeysContainer.appendChild(detail);
-                    mnemoKeyCount += 1;
+                    const count = mnemoKeysContainer.querySelectorAll('.flashcard-entry-block').length;
+                    addMnemoKeyField(count + 1, mnemoPlaceholders[count] || { key: '…', detail: '…' });
                 };
             }
             if (mnemoSubmitBtn) {
                 mnemoSubmitBtn.onclick = async () => {
+                    hideFormError(mnemoForm);
                     const title = mnemoTitel ? mnemoTitel.value.trim() : '';
-                    if (!title || !currentTopicId) {
-                        closeMnemoForm();
+                    if (!title) {
+                        showFormError(mnemoForm, 'Bitte einen Titel eingeben.');
                         return;
                     }
-                    const keys = [];
-                    const m1 = document.getElementById('mnemoSchluessel1');
-                    const m1d = document.getElementById('mnemoSchluessel1Detail');
-                    if (m1 && m1d) {
-                        keys.push({ schluessel: m1.value.trim(), inhalt: m1d.value.trim() });
+                    const filledKeys = collectMnemoKeysFromDom().filter((k) => k.schluessel || k.inhalt);
+                    if (filledKeys.length === 0) {
+                        showFormError(mnemoForm, 'Bitte mindestens einen Schlüssel mit Inhalt ausfüllen.');
+                        return;
                     }
-                    for (let i = 2; i < mnemoKeyCount; i++) {
-                        const kn = document.getElementById(`mnemoSchluessel${i}`);
-                        const kd = document.getElementById(`mnemoSchluessel${i}Detail`);
-                        if (kn && kd) {
-                            keys.push({ schluessel: kn.value.trim(), inhalt: kd.value.trim() });
-                        }
+                    if (hasDuplicateMnemoKeys(filledKeys)) {
+                        showFormError(mnemoForm, 'Jeder Schlüssel darf nur einmal vorkommen. Bitte kürzere oder unterschiedliche Schlüssel verwenden.');
+                        return;
                     }
-                    if (keys.length === 0) {
-                        closeMnemoForm();
+                    if (formMode === 'suggest') {
+                        await submitSuggestionPayload({ style: 'mnemo', title, keys: filledKeys }, closeMnemoForm, mnemoForm);
+                        return;
+                    }
+                    if (!currentTopicId) {
+                        showFormError(mnemoForm, 'Bitte zuerst ein Thema auswählen.');
                         return;
                     }
                     try {
-                        const res = await fetch(`${API_BASE}/api/flashcards`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ topic_id: currentTopicId, style: 'mnemo', title, keys })
-                        });
-                        if (!res.ok) throw new Error();
+                        const result = await postFlashcard({ topic_id: currentTopicId, style: 'mnemo', title, keys: filledKeys });
+                        if (!result.ok) {
+                            showFormError(mnemoForm, mapFlashcardError(result.data, result.status));
+                            return;
+                        }
                         closeMnemoForm();
                         await loadFlashcards();
                     } catch (e) {
-                        closeMnemoForm();
+                        showFormError(mnemoForm, 'Die Karte konnte nicht gespeichert werden. Bitte später erneut versuchen.');
+                    }
+                };
+            }
+            if (oklusionCancelBtn) oklusionCancelBtn.onclick = closeOklusionForm;
+            if (oklusionSubmitBtn) {
+                oklusionSubmitBtn.onclick = async () => {
+                    hideFormError(oklusionForm);
+                    const editor = ensureOklusionEditor();
+                    const data = editor?.getData();
+                    if (!data || !data.image) {
+                        showFormError(oklusionForm, 'Bitte ein Bild hochladen.');
+                        return;
+                    }
+                    if (!data.occlusions || data.occlusions.length === 0) {
+                        showFormError(oklusionForm, 'Bitte mindestens eine Abdeckung hinzufügen.');
+                        return;
+                    }
+                    const title = oklusionTitel?.value.trim() || '';
+                    if (!title) {
+                        showFormError(oklusionForm, 'Bitte einen Titel eingeben.');
+                        return;
+                    }
+                    const payload = {
+                        style: 'oklusion',
+                        title,
+                        image: data.image,
+                        occlusions: data.occlusions
+                    };
+                    if (formMode === 'suggest') {
+                        await submitSuggestionPayload(payload, closeOklusionForm, oklusionForm);
+                        return;
+                    }
+                    if (!currentTopicId) {
+                        showFormError(oklusionForm, 'Bitte zuerst ein Thema auswählen.');
+                        return;
+                    }
+                    try {
+                        const result = await postFlashcard({ topic_id: currentTopicId, ...payload });
+                        if (!result.ok) {
+                            showFormError(oklusionForm, mapFlashcardError(result.data, result.status));
+                            return;
+                        }
+                        closeOklusionForm();
+                        await loadFlashcards();
+                    } catch (e) {
+                        showFormError(oklusionForm, 'Die Karte konnte nicht gespeichert werden. Bitte später erneut versuchen.');
                     }
                 };
             }
         }
 
+        function setupCardsManageBtn() {
+            const btn = document.querySelector('.cards-manage-btn');
+            if (!btn) return;
+            btn.addEventListener('click', () => {
+                const topicId = getTopicIdFromUrl();
+                if (!topicId) return;
+                window.location.href = `Kartenverwaltung.html?topic=${encodeURIComponent(topicId)}`;
+            });
+        }
+
+        function injectStyleOptionIcons() {
+            document.querySelectorAll('.flashcard-style-option').forEach(btn => {
+                const host = btn.querySelector('.style-option-icon');
+                if (host) host.innerHTML = typeIcon(btn.dataset.style);
+            });
+        }
+
         window.addEventListener('load', function() {
             loadFlashcards();
             setupEventListeners();
+            setupCardsManageBtn();
+            injectStyleOptionIcons();
         });
     </script>
 </body>

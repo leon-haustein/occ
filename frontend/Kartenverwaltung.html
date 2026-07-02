@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kartenverwaltung - OVGU Community Cards</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="vendor/katex/katex.min.css">
+</head>
+<body class="bg-layer2">
+    <div class="container">
+        <div class="layer-row">
+            <div class="layer-links-stack">
+                <div class="layer-header">
+                    <nav class="breadcrumb" id="breadcrumb">
+                        <!-- Breadcrumb will be populated by JavaScript -->
+                    </nav>
+                    <div class="layer-header-end">
+                        <p class="layer-brand" id="layerBrand"></p>
+                        <div class="header-action-row">
+                            <button type="button" class="cards-manage-btn is-active" title="Kartenverwaltung verlassen" aria-label="Kartenverwaltung verlassen" aria-pressed="true">
+                                <span class="cards-manage-btn__icon" aria-hidden="true">
+                                    <span></span><span></span><span></span><span></span>
+                                </span>
+                                <span class="cards-manage-btn__label"></span>
+                            </button>
+                            <button type="button" class="layer-login-btn" title="Login">Login</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="kv-filter-row">
+                    <input type="search" id="kvSearchInput" class="kv-search-input" placeholder="Karten durchsuchen…" aria-label="Karten durchsuchen">
+                    <select id="kvTypeSelect" class="kv-sort-select" aria-label="Kartentyp">
+                        <option value="alle">Alle</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Prozess">Prozess</option>
+                        <option value="Mnemo">Mnemo</option>
+                        <option value="Oklusion">Oklusion</option>
+                    </select>
+                    <select id="kvSortSelect" class="kv-sort-select" aria-label="Sortierung">
+                        <option value="neueste">Neueste zuerst</option>
+                        <option value="aelteste">Älteste zuerst</option>
+                        <option value="upvotes">Meiste Upvotes</option>
+                        <option value="downvotes">Meiste Downvotes</option>
+                    </select>
+                </div>
+                <div id="links-container">
+                    <!-- Flashcards will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="kvCardModal" class="kv-card-modal" aria-hidden="true">
+        <div class="kv-modal-card-wrap" role="dialog" aria-modal="true" aria-label="Karteikarte">
+            <button type="button" id="kvCloseBtn" class="close-btn" title="Zurück" aria-label="Zurück">&#10005;</button>
+            <div class="flashcard" id="kvFlashcard">
+                <div class="flashcard-content" id="kv-flashcard-content">
+                    <!-- Card content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="flashcardTypeModal" class="flashcard-type-modal" aria-hidden="true">
+        <div class="flashcard-type-form-wrap">
+            <button type="button" id="standardCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+            <div id="flashcardStandardForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardStandardTitle">
+            <h3 id="flashcardStandardTitle">Standard-Karteikarte</h3>
+            <div class="flashcard-form-error" role="alert" hidden></div>
+            <div>
+                <label for="standardQuestion">Frage</label>
+                <textarea id="standardQuestion" placeholder="Frage eingeben…" rows="3"></textarea>
+            </div>
+            <div>
+                <label for="standardAnswer">Antwort</label>
+                <textarea id="standardAnswer" placeholder="Antwort eingeben…" rows="3"></textarea>
+            </div>
+            <div class="flashcard-type-form-actions">
+                <button type="button" id="standardSubmitBtn">Hinzufügen</button>
+            </div>
+            </div>
+        </div>
+        <div class="flashcard-type-form-wrap">
+            <button type="button" id="prozessCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+            <div id="flashcardProzessForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardProzessTitle">
+            <h3 id="flashcardProzessTitle">Prozess-Karteikarte</h3>
+            <div class="flashcard-form-error" role="alert" hidden></div>
+            <div>
+                <label for="prozessTitel">Titel</label>
+                <input type="text" id="prozessTitel" placeholder="Titel eingeben…" maxlength="40">
+            </div>
+            <div id="prozessStepsContainer">
+                <div class="flashcard-entry-block" data-entry-type="prozess">
+                    <div class="flashcard-entry-header">
+                        <label for="prozessSchritt1">Schritt 1</label>
+                        <button type="button" class="flashcard-entry-remove" title="Schritt entfernen" aria-label="Schritt 1 entfernen">×</button>
+                    </div>
+                    <textarea id="prozessSchritt1" data-field="frage" placeholder="…" rows="3"></textarea>
+                    <textarea id="prozessSchritt1Detail" data-field="antwort" placeholder="…" rows="3" aria-label="Schritt 1 Detail"></textarea>
+                </div>
+            </div>
+            <button type="button" id="prozessAddStepBtn" class="prozess-add-step-btn">Schritt hinzufügen</button>
+            <div class="flashcard-type-form-actions">
+                <button type="button" id="prozessSubmitBtn">Hinzufügen</button>
+            </div>
+            </div>
+        </div>
+        <div class="flashcard-type-form-wrap">
+            <button type="button" id="mnemoCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+            <div id="flashcardMnemoForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardMnemoTitle">
+            <h3 id="flashcardMnemoTitle">Mnemo-Karteikarte</h3>
+            <div class="flashcard-form-error" role="alert" hidden></div>
+            <div>
+                <label for="mnemoTitel">Titel</label>
+                <input type="text" id="mnemoTitel" placeholder="Titel eingeben…" maxlength="40">
+            </div>
+            <div id="mnemoKeysContainer">
+                <div class="flashcard-entry-block" data-entry-type="mnemo">
+                    <div class="flashcard-entry-header">
+                        <label for="mnemoSchluessel1">Schlüssel 1</label>
+                        <button type="button" class="flashcard-entry-remove" title="Schlüssel entfernen" aria-label="Schlüssel 1 entfernen">×</button>
+                    </div>
+                    <input type="text" id="mnemoSchluessel1" data-field="schluessel" placeholder="z.B. Re" maxlength="500">
+                    <input type="text" id="mnemoSchluessel1Detail" data-field="inhalt" placeholder="Reich" maxlength="500" aria-label="Schlüssel 1 Detail">
+                </div>
+            </div>
+            <button type="button" id="mnemoAddKeyBtn" class="prozess-add-step-btn">Schlüssel hinzufügen</button>
+            <div class="flashcard-type-form-actions">
+                <button type="button" id="mnemoSubmitBtn">Hinzufügen</button>
+            </div>
+            </div>
+        </div>
+        <div class="flashcard-type-form-wrap">
+            <button type="button" id="oklusionCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+            <div id="flashcardOklusionForm" class="flashcard-type-form flashcard-type-form--oklusion" role="dialog" aria-modal="true" aria-labelledby="flashcardOklusionTitle">
+            <h3 id="flashcardOklusionTitle">Oklusion-Karteikarte</h3>
+            <div class="flashcard-form-error" role="alert" hidden></div>
+            <div>
+                <label for="oklusionTitel">Titel</label>
+                <input type="text" id="oklusionTitel" placeholder="Titel eingeben…" maxlength="255">
+            </div>
+            <div id="oklusionEditorHost"></div>
+            <div class="flashcard-type-form-actions">
+                <button type="button" id="oklusionSubmitBtn">Hinzufügen</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { OTTO_FACE_SVG } from './js/otto-face.js';
+        import { applyVoteUI, castVote, voterKeyQuery } from './js/votes.js';
+        import { UPVOTE_ICON_SVG, DOWNVOTE_ICON_SVG, COMMENT_ICON_SVG, DELETE_ICON_SVG } from './js/vote-icons.js';
+        import { typeIcon, typeIconKey } from './js/type-icons.js';
+        import { applyCommentCount, openCommentsPanel } from './js/comments.js';
+        import { setupFlashcardSuggestionForm } from './js/flashcard-suggestion-form.js';
+        import {
+            initFlashcardViewModal,
+            openFlashcardViewModal,
+            refreshFlashcardViewModal
+        } from './js/flashcard-view-modal.js';
+        import { renderMarkdown } from './js/markdown.js';
+
+        const API_BASE = 'http://127.0.0.1:3000';
+
+        let allCards = [];
+        let openSuggestionFormFn = null;
+
+        function getScopeFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('topic')) return { type: 'topic', id: params.get('topic') };
+            if (params.get('course')) return { type: 'course', id: params.get('course') };
+            if (params.get('program')) return { type: 'program', id: params.get('program') };
+            return null;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function setLayerBrand(scope) {
+            const el = document.getElementById('layerBrand');
+            if (!el) return;
+            const titles = { program: 'Kurse', course: 'Themen', topic: 'Karten' };
+            el.textContent = scope ? (titles[scope.type] || '') : '';
+        }
+
+        function renderBreadcrumb(steps) {
+            const breadcrumbContainer = document.getElementById('breadcrumb');
+            const faceSvg = OTTO_FACE_SVG;
+            let htmlOutput = '';
+            for (const step of steps) {
+                htmlOutput += `
+                    <a href="${step.href}" class="breadcrumb-step breadcrumb-step--${step.id}" title="${step.title}">
+                        ${faceSvg}
+                    </a>
+                `;
+            }
+            breadcrumbContainer.innerHTML = htmlOutput;
+        }
+
+        function applyCardUpdate(updatedCard) {
+            const idx = allCards.findIndex((c) => c.id === updatedCard.id);
+            if (idx < 0) return;
+            allCards[idx] = { ...allCards[idx], ...updatedCard };
+            refreshFlashcardViewModal(allCards[idx]);
+            renderGrid();
+        }
+
+        function createCardTile(card) {
+            const container = document.getElementById('links-container');
+            const tile = document.createElement('div');
+            tile.className = 'link-item';
+            tile.dataset.cardId = card.id;
+            tile.innerHTML = `
+                <span class="kv-typ-icon kv-typ-icon--${typeIconKey(card.typ)}" title="${escapeHtml(card.typ || '')}" aria-label="${escapeHtml(card.typ || '')}">${typeIcon(card.typ)}</span>
+                <div class="link-content">
+                    <div class="course-title">${renderMarkdown(card.question || '')}</div>
+                </div>
+                <div class="sticker-bar">
+                    <button type="button" class="upvote-icon icon-btn" aria-label="Karte positiv bewerten" title="Positiv bewerten">
+                        ${UPVOTE_ICON_SVG}
+                    </button>
+                    <button type="button" class="downvote-icon icon-btn" aria-label="Karte negativ bewerten" title="Negativ bewerten">
+                        ${DOWNVOTE_ICON_SVG}
+                    </button>
+                    <button type="button" class="comment-icon icon-btn" aria-label="Karte kommentieren" title="Kommentieren">
+                        ${COMMENT_ICON_SVG}
+                    </button>
+                    <button type="button" class="delete-icon" aria-label="Karteikarte löschen" title="Karteikarte löschen">
+                        ${DELETE_ICON_SVG}
+                    </button>
+                </div>
+            `;
+
+            const voteContainer = tile.querySelector('.sticker-bar');
+            applyVoteUI(voteContainer, {
+                upvotes: card.upvotes ?? 0,
+                downvotes: card.downvotes ?? 0,
+                user_vote: card.user_vote ?? null
+            });
+            applyCommentCount(voteContainer, card.comment_count ?? 0);
+            tile.querySelector('.upvote-icon')?.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                const data = await castVote(API_BASE, 'karteikarte', card.id, 'up', voteContainer);
+                if (data) {
+                    card.upvotes = data.upvotes;
+                    card.downvotes = data.downvotes;
+                    card.user_vote = data.user_vote;
+                }
+            });
+            tile.querySelector('.downvote-icon')?.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                const data = await castVote(API_BASE, 'karteikarte', card.id, 'down', voteContainer);
+                if (data) {
+                    card.upvotes = data.upvotes;
+                    card.downvotes = data.downvotes;
+                    card.user_vote = data.user_vote;
+                }
+            });
+            tile.querySelector('.comment-icon')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                openCommentsPanel(API_BASE, 'karteikarte', card.id, {
+                    title: card.question || 'Karteikarte',
+                    changeMode: 'flashcard',
+                    onChangeRequest: ({ authorName, addSuggestion }) => {
+                        if (openSuggestionFormFn) {
+                            openSuggestionFormFn(card, authorName, addSuggestion);
+                        }
+                    },
+                    onCardApplied: applyCardUpdate,
+                    onCountChange: (count) => {
+                        card.comment_count = count;
+                        applyCommentCount(voteContainer, count);
+                    }
+                });
+            });
+            tile.querySelector('.delete-icon')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (!confirm('Karteikarte wirklich löschen?')) return;
+                fetch(`${API_BASE}/api/flashcards/${card.id}`, { method: 'DELETE' })
+                    .then(res => res.ok ? undefined : Promise.reject())
+                    .then(() => {
+                        allCards = allCards.filter(c => c.id !== card.id);
+                        renderGrid();
+                    })
+                    .catch(() => {});
+            });
+
+            tile.setAttribute('tabindex', '0');
+            tile.setAttribute('role', 'button');
+            tile.title = card.question || '';
+            tile.addEventListener('click', (e) => {
+                if (e.target.closest('.sticker-bar')) return;
+                openFlashcardViewModal(card);
+            });
+            tile.addEventListener('keydown', (e) => {
+                if (e.target.closest('.sticker-bar')) return;
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFlashcardViewModal(card); }
+            });
+            container.appendChild(tile);
+        }
+
+        /* ---------- Filterfunktion (Typ, Volltext, Sortierung) ---------- */
+
+        function cardSearchText(card) {
+            const parts = [card.question, card.answer];
+            if (card.typ === 'Oklusion') parts.push('Oklusion');
+            for (const step of card.steps || []) {
+                parts.push(step.frage, step.antwort);
+            }
+            for (const key of card.keys || []) {
+                parts.push(key.schluessel, key.inhalt);
+            }
+            return parts.filter(Boolean).join(' ').toLowerCase();
+        }
+
+        function getFilteredCards() {
+            const query = document.getElementById('kvSearchInput').value.trim().toLowerCase();
+            const sort = document.getElementById('kvSortSelect').value;
+            const typeFilter = document.getElementById('kvTypeSelect').value;
+            let cards = allCards.filter(c => typeFilter === 'alle' || c.typ === typeFilter);
+            if (query) {
+                cards = cards.filter(c => cardSearchText(c).includes(query));
+            }
+            cards = cards.slice();
+            if (sort === 'neueste') {
+                cards.sort((a, b) => new Date(b.erstellungsdatum) - new Date(a.erstellungsdatum) || b.id - a.id);
+            } else if (sort === 'aelteste') {
+                cards.sort((a, b) => new Date(a.erstellungsdatum) - new Date(b.erstellungsdatum) || a.id - b.id);
+            } else if (sort === 'upvotes') {
+                cards.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+            } else if (sort === 'downvotes') {
+                cards.sort((a, b) => (b.downvotes || 0) - (a.downvotes || 0));
+            }
+            return cards;
+        }
+
+        function renderGrid() {
+            const container = document.getElementById('links-container');
+            container.innerHTML = '';
+            const cards = getFilteredCards();
+            if (cards.length === 0) {
+                container.innerHTML = allCards.length === 0
+                    ? '<p>Keine Karteikarten vorhanden.</p>'
+                    : '<p>Keine Karteikarten gefunden.</p>';
+                return;
+            }
+            cards.forEach(card => createCardTile(card));
+        }
+
+        function setupFilters() {
+            document.getElementById('kvTypeSelect').addEventListener('change', renderGrid);
+            document.getElementById('kvSearchInput').addEventListener('input', renderGrid);
+            document.getElementById('kvSortSelect').addEventListener('change', renderGrid);
+        }
+
+        /* ---------- Laden ---------- */
+
+        async function resolveScopeContext(scope) {
+            // Liefert Karten-Endpoint und Breadcrumb-Schritte je nach Herkunft
+            if (scope.type === 'topic') {
+                const topicRes = await fetch(`${API_BASE}/api/topics/${scope.id}`);
+                if (!topicRes.ok) throw new Error('Topic not found');
+                const topic = await topicRes.json();
+                const courseRes = await fetch(`${API_BASE}/api/courses/${topic.kurs_id}`);
+                if (!courseRes.ok) throw new Error('Course not found');
+                const course = await courseRes.json();
+                return {
+                    endpoint: `${API_BASE}/api/topics/${scope.id}/flashcards`,
+                    breadcrumb: [
+                        { id: 'index', title: 'Ebene 1', href: 'index.html' },
+                        { id: 'layer2', title: 'Ebene 2', href: `layer2.html?program=${course.studiengang_id}` },
+                        { id: 'layer3', title: 'Ebene 3', href: `layer3.html?course=${course.id}` }
+                    ]
+                };
+            }
+            if (scope.type === 'course') {
+                const courseRes = await fetch(`${API_BASE}/api/courses/${scope.id}`);
+                if (!courseRes.ok) throw new Error('Course not found');
+                const course = await courseRes.json();
+                return {
+                    endpoint: `${API_BASE}/api/courses/${scope.id}/flashcards`,
+                    breadcrumb: [
+                        { id: 'index', title: 'Ebene 1', href: 'index.html' },
+                        { id: 'layer2', title: 'Ebene 2', href: `layer2.html?program=${course.studiengang_id}` }
+                    ]
+                };
+            }
+            const programRes = await fetch(`${API_BASE}/api/programs/${scope.id}`);
+            if (!programRes.ok) throw new Error('Program not found');
+            return {
+                endpoint: `${API_BASE}/api/programs/${scope.id}/flashcards`,
+                breadcrumb: [
+                    { id: 'index', title: 'Ebene 1', href: 'index.html' }
+                ]
+            };
+        }
+
+        async function loadCards() {
+            const container = document.getElementById('links-container');
+            const scope = getScopeFromUrl();
+            setLayerBrand(scope);
+            if (!scope) {
+                container.innerHTML = '<p>Kein Studiengang, Kurs oder Thema gewählt.</p>';
+                return;
+            }
+            try {
+                const context = await resolveScopeContext(scope);
+                renderBreadcrumb(context.breadcrumb);
+                const cardsRes = await fetch(`${context.endpoint}?${voterKeyQuery()}`);
+                if (!cardsRes.ok) throw new Error('Flashcards failed');
+                const cards = await cardsRes.json();
+                allCards = cards.filter(c => c.question != null);
+                renderGrid();
+            } catch (err) {
+                container.innerHTML = '<p>Karteikarten konnten nicht geladen werden.</p>';
+            }
+        }
+
+        function setupCardsManageBtn() {
+            // Toggle "aus": zurück zur Ebene, aus der man gekommen ist
+            const btn = document.querySelector('.cards-manage-btn');
+            if (!btn) return;
+            btn.addEventListener('click', () => {
+                const scope = getScopeFromUrl();
+                if (!scope) return;
+                const targets = {
+                    topic: `layer4.html?topic=${encodeURIComponent(scope.id)}`,
+                    course: `layer3.html?course=${encodeURIComponent(scope.id)}`,
+                    program: `layer2.html?program=${encodeURIComponent(scope.id)}`
+                };
+                window.location.href = targets[scope.type];
+            });
+        }
+
+        window.addEventListener('load', () => {
+            const { openSuggestionForm } = setupFlashcardSuggestionForm(API_BASE);
+            openSuggestionFormFn = openSuggestionForm;
+            initFlashcardViewModal({
+                modal: document.getElementById('kvCardModal'),
+                flashcard: document.getElementById('kvFlashcard'),
+                content: document.getElementById('kv-flashcard-content'),
+                closeBtn: document.getElementById('kvCloseBtn')
+            });
+            setupFilters();
+            setupCardsManageBtn();
+            loadCards();
+        });
+    </script>
+</body>
+</html>

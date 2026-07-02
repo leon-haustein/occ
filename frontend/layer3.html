@@ -6,39 +6,55 @@
     <title>Topics - OVGU Community Cards</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-layer3">
     <div class="container">
-        <!-- Breadcrumb Navigation -->
-        <nav class="breadcrumb" id="breadcrumb">
-            <!-- Breadcrumb will be populated by JavaScript -->
-        </nav>
-
-        <!-- Topics Section -->
-        <main class="topics-section">
-            <div id="topics-container">
-                <!-- Topics will be populated by JavaScript -->
-            </div>
-            <div class="add-topic-row">
-                <button type="button" id="addTopicBtn" class="add-topic-btn" title="Thema hinzufügen">+</button>
-                <div id="addTopicForm" class="add-topic-form" style="display: none;">
-                    <input type="text" id="newTopicName" placeholder="Themenname" maxlength="255">
-                    <button type="button" id="saveNewTopicBtn">Hinzufügen</button>
-                    <button type="button" id="cancelAddTopicBtn">Abbrechen</button>
+        <div class="layer-row">
+            <div class="layer-links-stack">
+                <div class="layer-header">
+                    <!-- Breadcrumb Navigation -->
+                    <nav class="breadcrumb" id="breadcrumb">
+                        <!-- Breadcrumb will be populated by JavaScript -->
+                    </nav>
+                    <div class="layer-header-end">
+                        <p class="layer-brand">Themen</p>
+                        <div class="header-action-row">
+                            <div id="addTopicForm" class="add-topic-form" style="display: none;">
+                                <input type="text" id="newTopicName" placeholder="Thema hinzufügen" maxlength="40">
+                                <button type="button" id="saveNewTopicBtn" class="form-action-btn form-action-btn--confirm" title="Hinzufügen" aria-label="Hinzufügen">&#10003;</button>
+                                <button type="button" id="cancelAddTopicBtn" class="form-action-btn form-action-btn--cancel" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                            </div>
+                            <button type="button" id="addTopicBtn" class="header-action-add-btn" title="Thema hinzufügen">+</button>
+                            <button type="button" class="cards-manage-btn" title="Kartenverwaltung" aria-label="Kartenverwaltung" aria-pressed="false">
+                                <span class="cards-manage-btn__icon" aria-hidden="true">
+                                    <span></span><span></span><span></span><span></span>
+                                </span>
+                                <span class="cards-manage-btn__label"></span>
+                            </button>
+                            <button type="button" class="layer-login-btn" title="Login">Login</button>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Topics Section -->
+                    <div id="topics-container">
+                        <!-- Topics will be populated by JavaScript -->
+                    </div>
             </div>
-        </main>
+        </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { OTTO_FACE_SVG } from './js/otto-face.js';
+        import { applyVoteUI, castVote, voterKeyQuery } from './js/votes.js';
+        import { UPVOTE_ICON_SVG, DOWNVOTE_ICON_SVG, COMMENT_ICON_SVG, DELETE_ICON_SVG } from './js/vote-icons.js';
+        import { applyCommentCount, openCommentsPanel } from './js/comments.js';
+        import { progressFromEntity, renderMiniBars } from './js/progress-bars.js';
+
         const API_BASE = 'http://127.0.0.1:3000';
 
         function getCourseIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('course');
-        }
-
-        function getProgramLabel(program) {
-            return program.abschluss ? `${program.abschluss} ${program.studiengang}` : program.studiengang;
         }
 
         function escapeHtml(text) {
@@ -47,21 +63,32 @@
             return div.innerHTML;
         }
 
-        function createBreadcrumb(program, course) {
-            const breadcrumb = document.getElementById('breadcrumb');
-            const programLabel = getProgramLabel(program);
-            breadcrumb.innerHTML = `
-                <span class="breadcrumb-item">
-                    <a href="index.html" class="breadcrumb-link">${escapeHtml(programLabel)}</a>
-                </span>
-                <span class="breadcrumb-separator">></span>
-                <span class="breadcrumb-item">
-                    <a href="layer2.html?program=${encodeURIComponent(course.studiengang_id)}" class="breadcrumb-link">${escapeHtml(course.name)}</a>
-                </span>
-                <span class="breadcrumb-separator">></span>
-                <span class="breadcrumb-item breadcrumb-current">Themen</span>
-            `;
-        }
+        function createBreadcrumb(currentLevel, studiengangId = null, courseId = null) {
+            const breadcrumbContainer = document.getElementById('breadcrumb');
+            
+            const layers = [
+                { id: 'index', title: 'Ebene 1', href: 'index.html' },
+                { id: 'layer2', title: 'Ebene 2', href: `layer2.html?program=${studiengangId}` },
+                { id: 'layer3', title: 'Ebene 3', href: `layer3.html?course=${courseId}` },
+                { id: 'layer4', title: 'Ebene 4', href: 'layer4.html' }
+            ];
+
+            const faceSvg = OTTO_FACE_SVG;
+
+            let htmlOutput = '';
+
+            for (let i = 0; i < currentLevel - 1; i++) {
+                const layer = layers[i];
+
+                htmlOutput += `
+                    <a href="${layer.href}" class="breadcrumb-step breadcrumb-step--${layer.id}" title="${layer.title}">
+                        ${faceSvg}
+                    </a>
+                `;
+            }
+
+            breadcrumbContainer.innerHTML = htmlOutput;
+}
 
         function createTopicElement(topic, courseId) {
             const container = document.getElementById('topics-container');
@@ -69,23 +96,28 @@
             topicDiv.className = 'topic-item';
             topicDiv.dataset.topicId = topic.id;
             topicDiv.innerHTML = `
-                <div class="topic-actions">
-                    <button type="button" class="topic-delete-icon" aria-label="Thema löschen" title="Thema löschen">&#10008;</button>
-                    <button type="button" class="topic-edit-icon" aria-label="Themenname bearbeiten" title="Themenname bearbeiten">&#9998;</button>
-                </div>
                 <div class="topic-content">
                     <div class="topic-title" data-topic-id="${topic.id}">${escapeHtml(topic.name)}</div>
                 </div>
+                <div class="sticker-bar">
+                    <button type="button" class="upvote-icon icon-btn" aria-label="Thema positiv bewerten" title="Positiv bewerten">
+                        ${UPVOTE_ICON_SVG}
+                    </button>
+                    <button type="button" class="downvote-icon icon-btn" aria-label="Thema negativ bewerten" title="Negativ bewerten">
+                        ${DOWNVOTE_ICON_SVG}
+                    </button>
+                    <button type="button" class="comment-icon icon-btn" aria-label="Thema kommentieren" title="Kommentieren">
+                        ${COMMENT_ICON_SVG}
+                    </button>
+                    <div class="sr-progress-bars"></div>
+                    <button type="button" class="delete-icon" aria-label="Thema löschen" title="Thema löschen">
+                        ${DELETE_ICON_SVG}
+                    </button>
+                </div>
             `;
-            const titleEl = topicDiv.querySelector('.topic-title');
-            const editBtn = topicDiv.querySelector('.topic-edit-icon');
-            const deleteBtn = topicDiv.querySelector('.topic-delete-icon');
+            renderMiniBars(topicDiv.querySelector('.sr-progress-bars'), progressFromEntity(topic));
+            const deleteBtn = topicDiv.querySelector('.delete-icon');
             const goToTopic = () => { window.location.href = `layer4.html?topic=${encodeURIComponent(topic.id)}`; };
-            editBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                startEditTopicName(topic.id, topic.name, titleEl, (newName) => { titleEl.textContent = newName; });
-            });
             deleteBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 e.preventDefault();
@@ -95,63 +127,50 @@
                     .then(() => topicDiv.remove())
                     .catch(() => {});
             });
+            const voteContainer = topicDiv.querySelector('.sticker-bar');
+            applyVoteUI(voteContainer, {
+                upvotes: topic.upvotes ?? 0,
+                downvotes: topic.downvotes ?? 0,
+                user_vote: topic.user_vote ?? null
+            });
+            topicDiv.querySelector('.upvote-icon')?.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                await castVote(API_BASE, 'thema', topic.id, 'up', voteContainer);
+            });
+            topicDiv.querySelector('.downvote-icon')?.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                await castVote(API_BASE, 'thema', topic.id, 'down', voteContainer);
+            });
+            applyCommentCount(voteContainer, topic.comment_count ?? 0);
+            topicDiv.querySelector('.comment-icon')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                openCommentsPanel(API_BASE, 'thema', topic.id, {
+                    title: topic.name,
+                    changeMode: 'rename',
+                    changePlaceholder: 'Neuen Themennamen vorschlagen…',
+                    onCountChange: (count) => applyCommentCount(voteContainer, count),
+                    onNameApplied: (newName) => {
+                        topic.name = newName;
+                        topicDiv.querySelector('.topic-title').textContent = newName;
+                        topicDiv.title = newName;
+                    }
+                });
+            });
             topicDiv.addEventListener('click', (e) => {
-                if (e.target.closest('.topic-edit-icon') || e.target.closest('.topic-delete-icon')) return;
+                if (e.target.closest('.sticker-bar')) return;
                 goToTopic();
             });
             topicDiv.setAttribute('tabindex', '0');
             topicDiv.setAttribute('role', 'button');
             topicDiv.title = topic.name;
             topicDiv.addEventListener('keydown', (e) => {
-                if (e.target.closest('.topic-edit-icon') || e.target.closest('.topic-delete-icon')) return;
+                if (e.target.closest('.sticker-bar')) return;
                 if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToTopic(); }
             });
             container.appendChild(topicDiv);
-        }
-
-        function startEditTopicName(topicId, currentName, titleEl, onSave) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.className = 'topic-title-edit';
-            input.value = currentName;
-            input.maxLength = 255;
-            titleEl.textContent = '';
-            titleEl.appendChild(input);
-            input.focus();
-            input.select();
-            const finish = () => {
-                const newName = input.value.trim();
-                if (newName === currentName || !newName) {
-                    titleEl.removeChild(input);
-                    titleEl.textContent = currentName;
-                    return;
-                }
-                fetch(`${API_BASE}/api/topics/${topicId}`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name: newName })
-                })
-                    .then(res => res.ok ? res.json() : Promise.reject())
-                    .then(() => {
-                        titleEl.removeChild(input);
-                        titleEl.textContent = newName;
-                        titleEl.closest('.topic-item').title = newName;
-                        if (onSave) onSave(newName);
-                    })
-                    .catch(() => {
-                        titleEl.removeChild(input);
-                        titleEl.textContent = currentName;
-                    });
-            };
-            input.addEventListener('blur', finish);
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') { e.preventDefault(); finish(); }
-                if (e.key === 'Escape') {
-                    e.preventDefault();
-                    titleEl.removeChild(input);
-                    titleEl.textContent = currentName;
-                }
-            });
         }
 
         function setupAddTopic(courseId) {
@@ -195,15 +214,10 @@
                 const courseRes = await fetch(`${API_BASE}/api/courses/${courseId}`);
                 if (!courseRes.ok) throw new Error('Course not found');
                 const course = await courseRes.json();
-                const [programRes, topicsRes] = await Promise.all([
-                    fetch(`${API_BASE}/api/programs/${course.studiengang_id}`),
-                    fetch(`${API_BASE}/api/courses/${courseId}/topics`)
-                ]);
-                if (!programRes.ok) throw new Error('Program not found');
+                const topicsRes = await fetch(`${API_BASE}/api/courses/${courseId}/topics?${voterKeyQuery()}`);
                 if (!topicsRes.ok) throw new Error('Topics failed');
-                const program = await programRes.json();
                 const topics = await topicsRes.json();
-                createBreadcrumb(program, course);
+                createBreadcrumb(3, course.studiengang_id, courseId);
                 const container = document.getElementById('topics-container');
                 container.innerHTML = '';
                 if (topics.length > 0) {
@@ -217,7 +231,20 @@
             }
         }
 
-        window.addEventListener('load', loadTopics);
+        function setupCardsManageBtn() {
+            const btn = document.querySelector('.cards-manage-btn');
+            if (!btn) return;
+            btn.addEventListener('click', () => {
+                const courseId = getCourseIdFromUrl();
+                if (!courseId) return;
+                window.location.href = `Kartenverwaltung.html?course=${encodeURIComponent(courseId)}`;
+            });
+        }
+
+        window.addEventListener('load', () => {
+            loadTopics();
+            setupCardsManageBtn();
+        });
     </script>
 </body>
 </html>

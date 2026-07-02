@@ -5,33 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Program Selector - OVGU Community Cards</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://api.fontshare.com/v2/css?f[]=sharpie@700,800,900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="bg-index">
     <div class="container">
-        <!-- Breadcrumb Navigation -->
-        <nav class="breadcrumb" id="breadcrumb">
-            <!-- Breadcrumb will be populated by JavaScript -->
-        </nav>
-
         <!-- Study Program Selector Section -->
         <main class="study-selector-section">
             <div class="selector-container">
-                <h2 class="selector-title">Wähle deinen Studiengang</h2>
-                <div class="dropdown-wrapper">
-                    <div class="custom-dropdown" id="studyDropdown">
-                        <input 
-                            type="text" 
-                            class="dropdown-input" 
-                            id="studyInput" 
-                            placeholder="Suchen oder Studiengang auswählen..."
-                            autocomplete="off"
-                        >
-                        <button class="dropdown-toggle" id="dropdownToggle" aria-label="Toggle dropdown">
-                            ▼
-                        </button>
-                        <div class="dropdown-menu" id="dropdownMenu">
-                            <!-- Options will be populated by JavaScript -->
+                <div class="selector-row">
+                    <div class="inline">
+                        <div class="title-stack">
+                            <p class="ovgu-brand">OVGU</p>
+                            <div class="headline-row">
+                                <div id="otto-logo-host" class="otto-logo-host" aria-hidden="true"></div>
+                                <h1 class="headline">Community Cards</h1>
+                            </div>
                         </div>
+                    </div>
+                    <div class="selector-search-row">
+                        <div class="dropdown-wrapper">
+                            <div class="custom-dropdown" id="studyDropdown">
+                                <input
+                                    type="text"
+                                    class="dropdown-input"
+                                    id="studyInput"
+                                    placeholder="Wähle deinen Studiengang..."
+                                    autocomplete="off"
+                                >
+                                <div class="dropdown-toggle-bar">
+                                    <button class="dropdown-toggle" id="dropdownToggle" aria-label="Toggle dropdown">
+                                        ▼
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu" id="dropdownMenu">
+                                    <!-- Options will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="login" title="Login"><span>Login</span></button>
                     </div>
                 </div>
             </div>
@@ -73,17 +84,8 @@
             return program.degree ? `${program.degree} ${program.name}` : program.name;
         }
 
-        // Create breadcrumb for layer 1
-        function createBreadcrumb() {
-            const breadcrumb = document.getElementById('breadcrumb');
-            breadcrumb.innerHTML = `
-                <span class="breadcrumb-item breadcrumb-current">Studiengang</span>
-            `;
-        }
-
         // Initialize dropdown
         async function initializeDropdown() {
-            createBreadcrumb();
             setupEventListeners();
             dropdown.innerHTML = '<div class="dropdown-option no-results">Lade Studiengänge…</div>';
             const ok = await loadStudyPrograms();
@@ -237,6 +239,15 @@
 
         // Initialize when page loads
         window.addEventListener('load', initializeDropdown);
+    </script>
+
+    <script type="module">
+        import { OTTO_FIRST_LAYER_SVG } from './js/otto-face.js';
+
+        const host = document.getElementById('otto-logo-host');
+        if (host) {
+            host.innerHTML = OTTO_FIRST_LAYER_SVG;
+        }
     </script>
 </body>
 </html>
