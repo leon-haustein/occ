@@ -20,7 +20,7 @@ body {
 :root {
     /* Layout */
     --otto-aspect-ratio: 36.756 / 46.058829;
-    --otto-breadcrumb-size: clamp(32px, 8vw, 5rem);
+    --otto-breadcrumb-size: clamp(32px, 8vw, 4.5rem);
     --layer-content-width: clamp(18rem, 96vw, 56.25rem);
     --flashcard-height: clamp(15rem, 74.4svh, 26rem);
 
@@ -799,25 +799,18 @@ a.breadcrumb-step:hover .breadcrumb-face-svg .otto-face {
     flex-shrink: 0;
 }
 
-.layer-header-end {
-    display: inline-flex;
-    align-items: center;
-    gap: clamp(0.35rem, 2vw, 0.75rem);
-    flex-shrink: 0;
-}
-
 /* Layer page title — OVGU brand style at header scale */
 .layer-brand {
     margin: 0;
     padding: 0;
     font-family: 'Sharpie', 'Comic Sans MS', cursive;
-    font-size: clamp(1.25rem, 4vw, 2.25rem);
+    font-size: clamp(1.25rem, 4.5vw, 3rem);
     font-weight: 900;
     font-style: italic;
     line-height: 1.05;
     letter-spacing: 0.02em;
     text-transform: uppercase;
-    color: #050505;
+    color: #ffffff;
     transform: skewX(-10deg) rotate(-2deg) translateY(3px);
     text-shadow:
     1px 2px 0 #da0070,
@@ -1098,7 +1091,7 @@ body.bg-layer4 .sticker-bar {
     font-size: 22px;
     width: clamp(36px, 5vw, 40px);
     padding: 0;
-    background: var(--color-ovgu-red)
+    background: #da0070;
 }
 
 .header-action-row .cards-manage-btn {
@@ -1807,6 +1800,25 @@ body.bg-layer4 .sticker-bar {
     line-height: 1;
 }
 
+.beta-ribbon {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.12em);
+    z-index: 10;
+    padding: 0.4em 1.6em;
+    background: var(--color-yellow);
+    color: var(--color-black);
+    font-family: var(--font-display);
+    font-size: 0.28em;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    border: 3px solid var(--color-black);
+    box-shadow: 4px 4px 0 var(--color-black);
+    transform: rotate(14deg);
+    transform-origin: right bottom;
+}
+
 /* OVGU — Sharpie Black (Fontshare), Version 7 */
 .ovgu-brand {
     margin: 0;
@@ -1845,6 +1857,16 @@ body.bg-layer4 .sticker-bar {
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
+}
+
+.headline-wrap {
+    position: relative;
+    display: inline-block;
+    font-size: clamp(1.5rem, 5vw, 4rem);
+}
+
+.headline-wrap .headline {
+    font-size: 1em;
 }
 
 .headline {
@@ -2042,10 +2064,6 @@ body.bg-layer4 .sticker-bar {
         font-size: clamp(1rem, 3.5vw, 1.5rem);
     }
 
-    .layer-header-end {
-        gap: 0.25rem;
-    }
-    
     .link-item {
         min-height: 120px;
     }
@@ -2622,7 +2640,6 @@ body.layer4-app {
     height: 100svh;
     min-height: 0;
     overflow: hidden;
-    --otto-breadcrumb-size: clamp(32px, min(8vw, 16svh), 5rem);
 }
 
 body.layer4-app .container {
