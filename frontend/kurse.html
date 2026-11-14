@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVGU Community Cards</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-layer2">
+        <div class="layer-row">
+            <div class="layer-links-stack">
+                <div class="layer-header">
+                    <nav class="breadcrumb" id="breadcrumb">
+                        <!-- Breadcrumb will be populated by JavaScript -->
+                    </nav>
+                        <p class="layer-brand">Kurse</p>
+                        <div class="header-action-row">
+                            <div id="addCourseForm" class="add-course-form" style="display: none;">
+                                <input type="text" id="newCourseName" placeholder="Kurs hinzufügen" maxlength="40">
+                                <button type="button" id="saveNewCourseBtn" class="form-action-btn form-action-btn--confirm" title="Hinzufügen" aria-label="Hinzufügen">&#10003;</button>
+                                <button type="button" id="cancelAddCourseBtn" class="form-action-btn form-action-btn--cancel" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                            </div>
+                            <button type="button" id="addCourseBtn" class="header-action-add-btn" title="Kurs hinzufügen">+</button>
+                            <button type="button" class="cards-manage-btn" title="Kartenverwaltung" aria-label="Kartenverwaltung" aria-pressed="false">
+                                <span class="cards-manage-btn__icon" aria-hidden="true">
+                                    <span></span><span></span><span></span><span></span>
+                                </span>
+                                <span class="cards-manage-btn__label"></span>
+                            </button>
+                            <button type="button" class="layer-login-btn" title="Login">Login</button>
+                        </div>
+                </div>
+                <div id="links-container">
+                    <!-- Courses will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+    <script type="module" src="js/pages/kurse.js"></script>
+</body>
+</html>

@@ -22,18 +22,25 @@ function mapVoteFields(row) {
         upvotes: Number(row.upvotes ?? 0),
         downvotes: Number(row.downvotes ?? 0),
         user_vote: row.user_vote == null ? null : Number(row.user_vote),
-        comment_count: Number(row.comment_count ?? 0)
+        comment_count: Number(row.comment_count ?? 0),
+        suggestion_count: Number(row.suggestion_count ?? 0)
     };
 }
 
-function feedCountSubquery(entityType) {
+function commentCountSubquery(entityType) {
     return `(
         SELECT entity_id, COUNT(*) AS comment_count
-        FROM (
-            SELECT entity_id FROM comments WHERE entity_type = '${entityType}'
-            UNION ALL
-            SELECT entity_id FROM change_suggestions WHERE entity_type = '${entityType}'
-        ) combined
+        FROM comments
+        WHERE entity_type = '${entityType}'
+        GROUP BY entity_id
+    )`;
+}
+
+function suggestionCountSubquery(entityType) {
+    return `(
+        SELECT entity_id, COUNT(*) AS suggestion_count
+        FROM change_suggestions
+        WHERE entity_type = '${entityType}'
         GROUP BY entity_id
     )`;
 }
@@ -666,7 +673,8 @@ router.get('/programs/:id/courses', async (req, res) => {
                     COALESCE(vc.upvotes, 0) AS upvotes,
                     COALESCE(vc.downvotes, 0) AS downvotes,
                     uv.vote_value AS user_vote,
-                    COALESCE(cc.comment_count, 0) AS comment_count
+                    COALESCE(cc.comment_count, 0) AS comment_count,
+                    COALESCE(sc.suggestion_count, 0) AS suggestion_count
              FROM kurse k
              LEFT JOIN (
                  SELECT entity_id,
@@ -676,7 +684,8 @@ router.get('/programs/:id/courses', async (req, res) => {
                  WHERE entity_type = 'kurs'
                  GROUP BY entity_id
              ) vc ON vc.entity_id = k.id
-             LEFT JOIN ${feedCountSubquery('kurs')} cc ON cc.entity_id = k.id
+             LEFT JOIN ${commentCountSubquery('kurs')} cc ON cc.entity_id = k.id
+             LEFT JOIN ${suggestionCountSubquery('kurs')} sc ON sc.entity_id = k.id
              LEFT JOIN votes uv
                  ON uv.entity_type = 'kurs'
                 AND uv.entity_id = k.id
@@ -749,7 +758,8 @@ router.get('/courses/:id/topics', async (req, res) => {
                     COALESCE(vc.upvotes, 0) AS upvotes,
                     COALESCE(vc.downvotes, 0) AS downvotes,
                     uv.vote_value AS user_vote,
-                    COALESCE(cc.comment_count, 0) AS comment_count
+                    COALESCE(cc.comment_count, 0) AS comment_count,
+                    COALESCE(sc.suggestion_count, 0) AS suggestion_count
              FROM themen t
              LEFT JOIN (
                  SELECT entity_id,
@@ -759,7 +769,8 @@ router.get('/courses/:id/topics', async (req, res) => {
                  WHERE entity_type = 'thema'
                  GROUP BY entity_id
              ) vc ON vc.entity_id = t.id
-             LEFT JOIN ${feedCountSubquery('thema')} cc ON cc.entity_id = t.id
+             LEFT JOIN ${commentCountSubquery('thema')} cc ON cc.entity_id = t.id
+             LEFT JOIN ${suggestionCountSubquery('thema')} sc ON sc.entity_id = t.id
              LEFT JOIN votes uv
                  ON uv.entity_type = 'thema'
                 AND uv.entity_id = t.id
@@ -833,7 +844,8 @@ async function loadFlashcardsWhere(whereSql, scopeParams, voterKey) {
                 COALESCE(vc.upvotes, 0) AS upvotes,
                 COALESCE(vc.downvotes, 0) AS downvotes,
                 uv.vote_value AS user_vote,
-                COALESCE(cc.comment_count, 0) AS comment_count
+                COALESCE(cc.comment_count, 0) AS comment_count,
+                COALESCE(sc.suggestion_count, 0) AS suggestion_count
          FROM karteikarten k
          LEFT JOIN standard_karteikarte s ON s.karteikarte_id = k.id
          LEFT JOIN prozess_karteikarte p ON p.karteikarte_id = k.id
@@ -847,7 +859,8 @@ async function loadFlashcardsWhere(whereSql, scopeParams, voterKey) {
              WHERE entity_type = 'karteikarte'
              GROUP BY entity_id
          ) vc ON vc.entity_id = k.id
-         LEFT JOIN ${feedCountSubquery('karteikarte')} cc ON cc.entity_id = k.id
+         LEFT JOIN ${commentCountSubquery('karteikarte')} cc ON cc.entity_id = k.id
+         LEFT JOIN ${suggestionCountSubquery('karteikarte')} sc ON sc.entity_id = k.id
          LEFT JOIN votes uv
              ON uv.entity_type = 'karteikarte'
             AND uv.entity_id = k.id

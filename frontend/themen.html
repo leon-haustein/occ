@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVGU Community Cards</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-layer3">
+        <div class="layer-row">
+            <div class="layer-links-stack">
+                <div class="layer-header">
+                    <!-- Breadcrumb Navigation -->
+                    <nav class="breadcrumb" id="breadcrumb">
+                        <!-- Breadcrumb will be populated by JavaScript -->
+                    </nav>
+                        <p class="layer-brand">Themen</p>
+                        <div class="header-action-row">
+                            <div id="addTopicForm" class="add-topic-form" style="display: none;">
+                                <input type="text" id="newTopicName" placeholder="Thema hinzufügen" maxlength="40">
+                                <button type="button" id="saveNewTopicBtn" class="form-action-btn form-action-btn--confirm" title="Hinzufügen" aria-label="Hinzufügen">&#10003;</button>
+                                <button type="button" id="cancelAddTopicBtn" class="form-action-btn form-action-btn--cancel" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                            </div>
+                            <button type="button" id="addTopicBtn" class="header-action-add-btn" title="Thema hinzufügen">+</button>
+                            <button type="button" class="cards-manage-btn" title="Kartenverwaltung" aria-label="Kartenverwaltung" aria-pressed="false">
+                                <span class="cards-manage-btn__icon" aria-hidden="true">
+                                    <span></span><span></span><span></span><span></span>
+                                </span>
+                                <span class="cards-manage-btn__label"></span>
+                            </button>
+                            <button type="button" class="layer-login-btn" title="Login">Login</button>
+                        </div>
+                </div>
+
+                <!-- Topics Section -->
+                    <div id="topics-container">
+                        <!-- Topics will be populated by JavaScript -->
+                    </div>
+            </div>
+        </div>
+
+    <script type="module" src="js/pages/themen.js"></script>
+</body>
+</html>

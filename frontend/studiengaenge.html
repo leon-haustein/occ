@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVGU Community Cards</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://api.fontshare.com/v2/css?f[]=sharpie@700,800,900&display=swap" rel="stylesheet">
+</head>
+<body>
+        <main class="study-selector-section">
+                            <p class="ovgu-brand">OVGU</p>
+                            <div class="headline-row">
+                                <div id="otto-logo-host" aria-hidden="true"></div>
+                                <div class="headline-wrap">
+                                    <span class="beta-ribbon" aria-label="Beta-Version">Beta</span>
+                                    <h1 class="headline">Community Cards</h1>
+                                </div>
+                            </div>
+                    <div class="selector-search-row">
+                        <div class="dropdown-wrapper">
+                            <div class="custom-dropdown" id="studyDropdown">
+                                <input
+                                    type="text"
+                                    class="dropdown-input"
+                                    id="studyInput"
+                                    placeholder="Wähle deinen Studiengang..."
+                                    autocomplete="off"
+                                >
+                                <div class="dropdown-toggle-bar">
+                                    <button class="dropdown-toggle" id="dropdownToggle" aria-label="Toggle dropdown">
+                                        ▼
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu" id="dropdownMenu">
+                                    <!-- Options will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="login" title="Login"><span>Login</span></button>
+                    </div>
+        </main>
+
+    <script type="module" src="js/pages/studiengaenge.js"></script>
+</body>
+</html>

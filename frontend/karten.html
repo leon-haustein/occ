@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVGU Community Cards</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="vendor/katex/katex.min.css">
+</head>
+<body class="bg-layer4 layer4-app">
+        <div class="layer-row">
+            <div class="layer-links-stack">
+                <div class="layer-header">
+                    <!-- Breadcrumb Navigation -->
+                    <nav class="breadcrumb" id="breadcrumb">
+                        <!-- Breadcrumb will be populated by JavaScript -->
+                    </nav>
+                        <p class="layer-brand">Karten</p>
+                        <div class="header-action-row">
+                            <button type="button" id="addFlashcardBtn" class="header-action-add-btn" title="Karteikarte hinzufügen">+</button>
+                            <button type="button" class="cards-manage-btn" title="Kartenverwaltung" aria-label="Kartenverwaltung" aria-pressed="false">
+                                <span class="cards-manage-btn__icon" aria-hidden="true">
+                                    <span></span><span></span><span></span><span></span>
+                                </span>
+                                <span class="cards-manage-btn__label"></span>
+                            </button>
+                            <button type="button" class="layer-login-btn" title="Login">Login</button>
+                        </div>
+                </div>
+                <main class="flashcard-section">
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <div class="flashcard-content" id="flashcard-content">
+                            <!-- Content will be populated by JavaScript -->
+                        </div>
+                        <div class="sticker-bar">
+                            <div class="flashcard-vote-group">
+                                <button type="button" class="upvote-icon icon-btn" aria-label="Karte positiv bewerten" title="Positiv bewerten"></button>
+                                <button type="button" class="downvote-icon icon-btn" aria-label="Karte negativ bewerten" title="Negativ bewerten"></button>
+                                <button type="button" class="comment-icon icon-btn" aria-label="Karte kommentieren" title="Kommentieren"></button>
+                                <button type="button" class="change-icon icon-btn" aria-label="Kartenänderung vorschlagen" title="Änderung vorschlagen"></button>
+                            </div>
+                            <div class="flashcard-controls">
+                                <div class="spaced-rep-buttons" id="spaced-rep-buttons">
+                                    <button type="button" class="sr-btn-1" data-rating="1"></button>
+                                    <button type="button" class="sr-btn-2" data-rating="2"></button>
+                                    <button type="button" class="sr-btn-3" data-rating="3"></button>
+                                </div>
+                            </div>
+                            <div class="flashcard-flex-column">
+                                <button type="button" class="delete-icon" aria-label="Karteikarte löschen" title="Karteikarte löschen"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </main>
+            </div>
+        </div>
+
+    <div id="flashcardStyleModal" class="flashcard-style-modal" aria-hidden="true">
+                    <div id="flashcardStyleForm" class="flashcard-style-form" role="dialog" aria-modal="true" aria-labelledby="flashcardStyleTitle">
+                        <button type="button" id="cancelFlashcardBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <h3 id="flashcardStyleTitle">Kartenstil wählen</h3>
+                        <div class="flashcard-style-options">
+                            <button type="button" class="flashcard-style-option" data-style="standard">
+                                <span class="style-option-icon" aria-hidden="true"></span>
+                                <span>Standard</span>
+                            </button>
+                            <button type="button" class="flashcard-style-option" data-style="mnemo">
+                                <span class="style-option-icon" aria-hidden="true"></span>
+                                <span>Mnemo</span>
+                            </button>
+                            <button type="button" class="flashcard-style-option" data-style="prozess">
+                                <span class="style-option-icon" aria-hidden="true"></span>
+                                <span>Prozess</span>
+                            </button>
+                            <button type="button" class="flashcard-style-option" data-style="oklusion">
+                                <span class="style-option-icon" aria-hidden="true"></span>
+                                <span>Oklusion</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="flashcardTypeModal" class="flashcard-type-modal" aria-hidden="true">
+                    <div class="flashcard-type-form-wrap">
+                        <button type="button" id="standardCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <div id="flashcardStandardForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardStandardTitle">
+                        <h3 id="flashcardStandardTitle">Standard-Karteikarte</h3>
+                        <div class="flashcard-form-error" role="alert" hidden></div>
+                        <div>
+                            <label for="standardQuestion">Frage</label>
+                            <textarea id="standardQuestion" placeholder="Frage eingeben…" rows="3"></textarea>
+                        </div>
+                        <div>
+                            <label for="standardAnswer">Antwort</label>
+                            <textarea id="standardAnswer" placeholder="Antwort eingeben…" rows="3"></textarea>
+                        </div>
+                        <div class="flashcard-type-form-actions">
+                            <button type="button" id="standardSubmitBtn">Hinzufügen</button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-type-form-wrap">
+                        <button type="button" id="prozessCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <div id="flashcardProzessForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardProzessTitle">
+                        <h3 id="flashcardProzessTitle">Prozess-Karteikarte</h3>
+                        <div class="flashcard-form-error" role="alert" hidden></div>
+                        <div>
+                            <label for="prozessTitel">Titel</label>
+                            <input type="text" id="prozessTitel" placeholder="Titel eingeben…" maxlength="40">
+                        </div>
+                        <div id="prozessStepsContainer">
+                            <div class="flashcard-entry-block" data-entry-type="prozess">
+                                <div class="flashcard-entry-header">
+                                    <label for="prozessSchritt1">Schritt 1</label>
+                                    <button type="button" class="flashcard-entry-remove" title="Schritt entfernen" aria-label="Schritt 1 entfernen">×</button>
+                                </div>
+                                <textarea id="prozessSchritt1" data-field="frage" placeholder="…" rows="3"></textarea>
+                                <textarea id="prozessSchritt1Detail" data-field="antwort" placeholder="…" rows="3" aria-label="Schritt 1 Detail"></textarea>
+                            </div>
+                        </div>
+                        <button type="button" id="prozessAddStepBtn" class="prozess-add-step-btn">Schritt hinzufügen</button>
+                        <div class="flashcard-type-form-actions">
+                            <button type="button" id="prozessSubmitBtn">Hinzufügen</button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-type-form-wrap">
+                        <button type="button" id="mnemoCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <div id="flashcardMnemoForm" class="flashcard-type-form" role="dialog" aria-modal="true" aria-labelledby="flashcardMnemoTitle">
+                        <h3 id="flashcardMnemoTitle">Mnemo-Karteikarte</h3>
+                        <div class="flashcard-form-error" role="alert" hidden></div>
+                        <div>
+                            <label for="mnemoTitel">Titel</label>
+                            <input type="text" id="mnemoTitel" placeholder="Titel eingeben…" maxlength="60">
+                        </div>
+                        <div id="mnemoKeysContainer">
+                            <div class="flashcard-entry-block" data-entry-type="mnemo">
+                                <div class="flashcard-entry-header">
+                                    <label for="mnemoSchluessel1">Schlüssel 1</label>
+                                    <button type="button" class="flashcard-entry-remove" title="Schlüssel entfernen" aria-label="Schlüssel 1 entfernen">×</button>
+                                </div>
+                                <input type="text" id="mnemoSchluessel1" data-field="schluessel" placeholder="z.B. Re" maxlength="500">
+                                <input type="text" id="mnemoSchluessel1Detail" data-field="inhalt" placeholder="Reich" maxlength="500" aria-label="Schlüssel 1 Detail">
+                            </div>
+                        </div>
+                        <button type="button" id="mnemoAddKeyBtn" class="prozess-add-step-btn">Schlüssel hinzufügen</button>
+                        <div class="flashcard-type-form-actions">
+                            <button type="button" id="mnemoSubmitBtn">Hinzufügen</button>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-type-form-wrap">
+                        <button type="button" id="oklusionCancelBtn" class="close-btn" title="Abbrechen" aria-label="Abbrechen">&#10005;</button>
+                        <div id="flashcardOklusionForm" class="flashcard-type-form flashcard-type-form--oklusion" role="dialog" aria-modal="true" aria-labelledby="flashcardOklusionTitle">
+                        <h3 id="flashcardOklusionTitle">Oklusion-Karteikarte</h3>
+                        <div class="flashcard-form-error" role="alert" hidden></div>
+                        <div>
+                            <label for="oklusionTitel">Titel</label>
+                            <input type="text" id="oklusionTitel" placeholder="Titel eingeben…" maxlength="255">
+                        </div>
+                        <div id="oklusionEditorHost"></div>
+                        <div class="flashcard-type-form-actions">
+                            <button type="button" id="oklusionSubmitBtn">Hinzufügen</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+    <script type="module" src="js/pages/karten.js"></script>
+</body>
+</html>
